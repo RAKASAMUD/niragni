@@ -42,10 +42,10 @@ try {
   if (-not (Test-Path -LiteralPath $apkSource)) { throw 'Build completed without expected APK' }
   $artifactDirectory = Join-Path $projectRoot 'artifacts'
   New-Item -ItemType Directory -Path $artifactDirectory -Force | Out-Null
-  $apkTarget = Join-Path $artifactDirectory 'bara-android.apk'
+  $apkTarget = Join-Path $artifactDirectory 'niragni-android.apk'
   Copy-Item -LiteralPath $apkSource -Destination $apkTarget -Force
   $digest = (Get-FileHash -LiteralPath $apkTarget -Algorithm SHA256).Hash
-  [IO.File]::WriteAllText("$apkTarget.sha256", "$digest  bara-android.apk`n")
+  [IO.File]::WriteAllText("$apkTarget.sha256", "$digest  niragni-android.apk`n")
   Write-Output "APK: $apkTarget"
   Write-Output "SHA256: $digest"
 } finally { Pop-Location }

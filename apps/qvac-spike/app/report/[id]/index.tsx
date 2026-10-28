@@ -40,7 +40,7 @@ export default function ReportDetail() {
   const del = useCallback(() => {
     Alert.alert(
       'Hapus draf',
-      'Hapus draf dan salinan fotonya dari Bara? Foto asli di galeri tetap ada.',
+      'Hapus draf dan salinan fotonya dari Niragni? Foto asli di galeri tetap ada.',
       [
         { text: 'Batal', style: 'cancel' },
         {
@@ -120,7 +120,7 @@ export default function ReportDetail() {
         <Divider />
         <Button title="Bagikan lagi" onPress={() => router.push(`/report/${id}/share`)} />
         <View style={{ height: space.sm }} />
-        <Button title="Hapus draf" variant="destructive" onPress={del} accessibilityHint="Menghapus draf dan salinan fotonya dari Bara" />
+        <Button title="Hapus draf" variant="destructive" onPress={del} accessibilityHint="Menghapus draf dan salinan fotonya dari Niragni" />
       </ScrollView>
     </Screen>
   );

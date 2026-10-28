@@ -43,7 +43,7 @@ export default function Share() {
     if (!report) return;
     try {
       await services.shareReport(report, channelId);
-      setNotice('Pilihan berbagi telah dibuka. Bara belum mengetahui apakah laporan diterima.');
+      setNotice('Pilihan berbagi telah dibuka. Niragni belum mengetahui apakah laporan diterima.');
       await load();
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));

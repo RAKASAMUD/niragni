@@ -66,7 +66,7 @@ export class ExportService {
     }
 
     lines.push('');
-    lines.push('Disiapkan secara lokal melalui aplikasi Bara (tanpa pengiriman otomatis).');
+    lines.push('Disiapkan secara lokal melalui aplikasi Niragni (tanpa pengiriman otomatis).');
 
     return {
       text: lines.join('\n'),

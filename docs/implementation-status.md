@@ -1,4 +1,4 @@
-# Cakupan implementasi Bara
+# Cakupan implementasi Niragni
 
 Baseline: Bara-PRD v0.9, Bara-UI-Spec, Bara-Verifikasi yang disediakan pengguna. Pengguna mengubah urutan: implementasi/build didahulukan; pengujian ditunda. Tabel ini mencatat source yang dibuat, bukan kelulusan acceptance test.
 
@@ -27,8 +27,8 @@ Tidak ada publish, deploy, pengiriman laporan, atau kontak instansi. Belum ada p
 
 ## Bukti Build Final Android
 
-Build release Android telah berhasil diselesaikan melalui `scripts/Build-Bara.ps1` dan diverifikasi dengan Android SDK build-tools 36.0.0 (`aapt` dan `apksigner`):
-- **Artefak APK**: `artifacts/bara-android.apk` (240.264.749 bytes)
+Build release Android telah berhasil diselesaikan melalui `scripts/Build-Niragni.ps1` (saat kompilasi masih bernama "Bara"; skrip telah diganti nama) dan diverifikasi dengan Android SDK build-tools 36.0.0 (`aapt` dan `apksigner`):
+- **Artefak APK**: `artifacts/bara-android.apk` (240.264.749 bytes, dipertahankan sebagai riwayat; APK bernama Niragni memerlukan rebuild)
 - **SHA-256**: `BB96C3ABDF6152E254327DF016DDD57BC76A71E1F0B9EEE5BA34E1B2E3F84E5F`
 - **Package**: `com.niragni.bara` (versionCode 1, versionName 1.0.0)
 - **SDK**: minSdkVersion 31, targetSdkVersion 36, compileSdkVersion 36
