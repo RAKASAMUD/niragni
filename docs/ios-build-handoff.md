@@ -178,11 +178,16 @@ Perintah ini akan:
 - Mengonfigurasi `Info.plist` sesuai deklarasi `app.json`.
 
 ### Langkah 4: Konfigurasi Signing di Xcode
-1. Buka workspace iOS di Xcode:
+1. Setelah `expo prebuild` di Mac, temukan workspace iOS yang benar-benar
+   dihasilkan (jangan asumsikan nama `bara` atau `Niragni`), lalu buka di Xcode:
    ```sh
-   open ios/bara.xcworkspace
+   # Temukan workspace yang digenerate (nama bergantung pada hasil prebuild):
+   ls ios/*.xcworkspace
+   # Buka workspace yang ditemukan, mis.:
+   open ios/<nama-workspace-yang-ditemukan>.xcworkspace
    ```
-2. Pilih target proyek **bara** pada navigasi kiri.
+2. Pilih target aplikasi yang sesuai pada navigasi kiri (nama target mengikuti
+   hasil prebuild; verifikasi dari daftar skema/target di Xcode, jangan asumsi).
 3. Masuk ke tab **Signing & Capabilities**:
    - Konfigurasikan penandatanganan (Signing) sesuai akun Apple Developer yang tersedia.
    - Pastikan **Bundle Identifier** tetap bernilai `com.niragni.bara`.
