@@ -85,23 +85,27 @@ try {
   Push-Location (Join-Path $appRoot 'android')
   try {
     if ($releaseSigning) {
-      # Pass the password to Gradle via a process-scoped env var consumed by the
-      # injected-signing properties; never place it on the command line.
-      $env:NRG_RELEASE_STORE_PW = $signingPassword
-      $gradleArgs = @(
-        ':app:assembleRelease',
-        '--max-workers=2',
-        "-Pandroid.injected.signing.store.file=$keystorePath",
-        '-Pandroid.injected.signing.store.password=${NRG_RELEASE_STORE_PW}',
-        "-Pandroid.injected.signing.key.alias=$KeyAlias",
-        '-Pandroid.injected.signing.key.password=${NRG_RELEASE_STORE_PW}',
-        '--no-daemon'
-      )
+      # Pass signing material to Gradle via ORG_GRADLE_PROJECT_* environment
+      # project properties (Gradle maps ORG_GRADLE_PROJECT_<name> -> project
+      # property <name>). The property names contain dots, which are set on the
+      # PROCESS environment via the .NET API. Nothing (especially the password)
+      # is placed on the command line; env is cleared in finally. --no-daemon
+      # ensures no background daemon retains the secret.
+      # Ref: https://docs.gradle.org/current/userguide/project_properties.html
+      [Environment]::SetEnvironmentVariable('ORG_GRADLE_PROJECT_android.injected.signing.store.file', $keystorePath, 'Process')
+      [Environment]::SetEnvironmentVariable('ORG_GRADLE_PROJECT_android.injected.signing.store.password', $signingPassword, 'Process')
+      [Environment]::SetEnvironmentVariable('ORG_GRADLE_PROJECT_android.injected.signing.key.alias', $KeyAlias, 'Process')
+      [Environment]::SetEnvironmentVariable('ORG_GRADLE_PROJECT_android.injected.signing.key.password', $signingPassword, 'Process')
       try {
-        & .\gradlew.bat @gradleArgs
+        & .\gradlew.bat ':app:assembleRelease' '--max-workers=2' '--no-daemon'
         if ($LASTEXITCODE -ne 0) { throw 'Gradle assembleRelease (release-signed) failed' }
       } finally {
-        Remove-Item Env:NRG_RELEASE_STORE_PW -ErrorAction SilentlyContinue
+        foreach ($n in @(
+          'ORG_GRADLE_PROJECT_android.injected.signing.store.file',
+          'ORG_GRADLE_PROJECT_android.injected.signing.store.password',
+          'ORG_GRADLE_PROJECT_android.injected.signing.key.alias',
+          'ORG_GRADLE_PROJECT_android.injected.signing.key.password'
+        )) { [Environment]::SetEnvironmentVariable($n, $null, 'Process') }
       }
     } else {
       Write-Warning 'Building with DEBUG signing (-AllowDebugSigning). This APK is NOT a release artifact.'
