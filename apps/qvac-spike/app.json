@@ -1,0 +1,82 @@
+{
+  "expo": {
+    "name": "Bara",
+    "slug": "bara",
+    "scheme": "bara",
+    "version": "1.0.0",
+    "orientation": "default",
+    "userInterfaceStyle": "automatic",
+    "android": {
+      "package": "com.niragni.bara",
+      "allowBackup": false,
+      "blockedPermissions": [
+        "android.permission.RECORD_AUDIO"
+      ],
+      "adaptiveIcon": {
+        "backgroundColor": "#ffffff"
+      }
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.niragni.bara",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Ambil foto untuk melengkapi draf laporan Anda.",
+        "NSPhotoLibraryUsageDescription": "Pilih foto pengamatan untuk disimpan dalam draf di perangkat.",
+        "NSLocationWhenInUseUsageDescription": "Isi posisi Anda sebagai pelapor bila Anda memilihnya. Lokasi kejadian tetap terpisah.",
+        "LSApplicationQueriesSchemes": [
+          "tel",
+          "mailto",
+          "whatsapp"
+        ]
+      }
+    },
+    "plugins": [
+      "./plugins/withBaraPrivacy.cjs",
+      "./plugins/withBaraNdk.cjs",
+      "@qvac/sdk/expo-plugin",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "minSdkVersion": 31,
+            "enableMinifyInReleaseBuilds": true,
+            "enableProguardInReleaseBuilds": true,
+            "enableShrinkResourcesInReleaseBuilds": true
+          },
+          "ios": {
+            "deploymentTarget": "17.0"
+          }
+        }
+      ],
+      "expo-router",
+      "expo-sqlite",
+      [
+        "expo-image-picker",
+        {
+          "cameraPermission": "Ambil foto untuk draf pengamatan Anda.",
+          "photosPermission": "Pilih foto pengamatan untuk draf Anda.",
+          "microphonePermission": false
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Isi posisi pelapor bila Anda memilihnya."
+        }
+      ],
+      [
+        "react-native-share",
+        {
+          "ios": [
+            "whatsapp",
+            "mailto"
+          ],
+          "android": [
+            "com.whatsapp"
+          ]
+        }
+      ],
+      "expo-font"
+    ]
+  }
+}
