@@ -18,7 +18,7 @@ import { services } from '../../../src/ui/services';
 import { formatAccuracy, formatTimeWithZone } from '../../../src/ui/format';
 
 export default function LocationScreen() {
-  const { id } = useLocalSearchParams<{ id: string }>();
+  const { id, focus } = useLocalSearchParams<{ id: string; focus?: string }>();
   const router = useRouter();
   const navigation = useNavigation();
   const { report, update, flush, isDirty, saveState } = useReportEditor(id);
@@ -92,6 +92,7 @@ export default function LocationScreen() {
           placeholder="2026-10-28T14:15:00+07:00"
           autoCapitalize="none"
           accessibilityLabel="Waktu pengamatan"
+          autoFocus={focus === 'time'}
         />
         <Field
           label="Zona waktu"

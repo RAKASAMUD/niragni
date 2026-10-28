@@ -148,6 +148,7 @@ export function Field({
   accessibilityLabel,
   autoCapitalize,
   helpText,
+  autoFocus,
 }: {
   label?: string;
   value: string;
@@ -159,6 +160,7 @@ export function Field({
   accessibilityLabel?: string;
   autoCapitalize?: 'none' | 'sentences';
   helpText?: string;
+  autoFocus?: boolean;
 }) {
   const t = useTheme();
   return (
@@ -174,6 +176,7 @@ export function Field({
         keyboardType={keyboardType}
         autoCapitalize={autoCapitalize ?? 'sentences'}
         accessibilityLabel={accessibilityLabel ?? label}
+        autoFocus={autoFocus}
         style={{
           backgroundColor: t.surface,
           borderWidth: StyleSheet.hairlineWidth,

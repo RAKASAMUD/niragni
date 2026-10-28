@@ -84,6 +84,18 @@ export default function Review() {
     update({ reviewedText: current ? `${current}\n${line}` : line });
   }, [report, update]);
 
+  // Summary acceptance: append the AI summary into reviewedText idempotently.
+  // This PRESERVES any manual edits (it only appends; it never silently
+  // overwrites the user's text) and is a no-op if the summary is already there.
+  const acceptSummary = useCallback(() => {
+    if (!report?.suggestion?.summary) return;
+    const line = report.suggestion.summary.trim();
+    if (!line) return;
+    const current = report.reviewedText || '';
+    if (current.includes(line)) return; // already adopted — idempotent
+    update({ reviewedText: current ? `${current}\n${line}` : line });
+  }, [report, update]);
+
   if (!report) {
     return (
       <Screen>
@@ -135,6 +147,20 @@ export default function Review() {
               <Card style={{ marginTop: space.xs, marginBottom: space.sm }}>
                 <Caption>Ringkasan saran</Caption>
                 <Body style={{ marginTop: space.xs }}>{suggestion.summary}</Body>
+                {(() => {
+                  const summaryAdopted = (report.reviewedText || '').includes(suggestion.summary.trim());
+                  return (
+                    <Button
+                      title={summaryAdopted ? 'Ringkasan ditambahkan ke draf' : 'Terima ringkasan ke draf'}
+                      variant={summaryAdopted ? 'secondary' : 'primary'}
+                      onPress={acceptSummary}
+                      disabled={summaryAdopted}
+                      style={{ marginTop: space.md }}
+                      accessibilityLabel="Terima ringkasan AI ke draf laporan"
+                      accessibilityHint="Menambahkan ringkasan ke ringkasan laporan tanpa menimpa edit Anda"
+                    />
+                  );
+                })()}
               </Card>
             ) : null}
             {suggestion.observations.map((obs, i) => {

@@ -55,7 +55,15 @@ export default function Photos() {
         await load(); // reload per contract: caller reads getReport after addPhoto
       }
     } catch (e) {
-      setError(e instanceof Error ? e.message : String(e));
+      const raw = e instanceof Error ? e.message : String(e);
+      // Friendly message for the cloud-only / unreadable-photo case; keep the
+      // actual message for other failures so they stay diagnosable.
+      const isCloudOnly = /cloud-only|tidak dapat diakses/i.test(raw);
+      setError(
+        isCloudOnly
+          ? 'Foto ini belum tersedia di perangkat. Pilih foto lokal atau coba saat terhubung.'
+          : raw
+      );
     } finally {
       setBusy(false);
     }
