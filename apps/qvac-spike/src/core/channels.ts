@@ -1,54 +1,15 @@
 /**
- * Emergency contact channels and directory baseline for forest/land fire (karhutla).
- * Based on verified public sources (Kemenhut 7 Sep 2026, checked 28 Oct 2026).
- * Never contacts agencies automatically.
+ * Emergency contact channels and directory for forest/land fire (karhutla).
+ * The directory data is the reviewed 25-entry Indonesia set in
+ * ./channel-directory (public = officially listed, never proven operational;
+ * 112 is regional-unconfirmed). Never contacts agencies automatically.
  */
 
 import * as Linking from 'expo-linking';
 import { Channel } from '../product-contract';
+import { CHANNEL_DIRECTORY } from './channel-directory';
 
-export const CHANNELS: Channel[] = [
-  {
-    id: 'kemenhut-posko-tel',
-    label: 'Posko Karhutla Kemenhut (Telepon)',
-    destination: '021-5704618',
-    kind: 'phone',
-    scope: 'Nasional',
-    sourceUrl: 'https://www.kehutanan.go.id/pers/cek-informasi-terbaru-karhutla-kemenhut-di-sini',
-    checkedAt: '2026-10-28',
-    availability: 'public'
-  },
-  {
-    id: 'kemenhut-posko-wa',
-    label: 'Posko Karhutla Kemenhut (WhatsApp)',
-    destination: '+62 8131-00-35000',
-    kind: 'whatsapp',
-    scope: 'Nasional',
-    sourceUrl: 'https://www.kehutanan.go.id/pers/cek-informasi-terbaru-karhutla-kemenhut-di-sini',
-    checkedAt: '2026-10-28',
-    availability: 'public'
-  },
-  {
-    id: 'kemenhut-posko-email',
-    label: 'Posko Karhutla Kemenhut (Email)',
-    destination: 'posko.karhutla@kehutanan.go.id',
-    kind: 'email',
-    scope: 'Nasional',
-    sourceUrl: 'https://www.kehutanan.go.id/pers/cek-informasi-terbaru-karhutla-kemenhut-di-sini',
-    checkedAt: '2026-10-28',
-    availability: 'public'
-  },
-  {
-    id: 'darurat-112',
-    label: 'Panggilan Darurat 112 (Regional)',
-    destination: '112',
-    kind: 'phone',
-    scope: 'Regional (tergantung wilayah)',
-    sourceUrl: 'https://layanan112.komdigi.go.id/',
-    checkedAt: '2026-10-28',
-    availability: 'unconfirmed'
-  }
-];
+export const CHANNELS: readonly Channel[] = CHANNEL_DIRECTORY;
 
 export function listChannels(): Channel[] {
   return [...CHANNELS];

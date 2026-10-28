@@ -1,0 +1,273 @@
+/**
+ * Niragni bundled emergency-channel directory (Indonesia karhutla).
+ *
+ * Source of truth: docs/channel-directory/indonesia-emergency-channels.json
+ * (AGY-researched, coordinator-reviewed: 25 entries, 24 "public", 1
+ * "unconfirmed" = national 112). Transcribed here as typed static data INSIDE
+ * the Expo/Metro app root so the app bundles it without importing files from
+ * outside the project root.
+ *
+ * Semantics (do not weaken):
+ * - "public" = officially listed by the agency's own source; it is NEVER a
+ *   claim the line is proven operational or that a report was received.
+ * - "unconfirmed" (112) = regional availability not confirmed; not a global
+ *   always-on service.
+ * Opening the dialer/share is always an explicit user action; the app never
+ * auto-calls, auto-sends, or claims delivery/receipt.
+ *
+ * Keep this file in sync with the JSON if the directory is re-researched.
+ */
+import { Channel } from '../product-contract';
+
+export const CHANNEL_DIRECTORY: readonly Channel[] = [
+    {
+        "id":  "kemenhut-posko-tel",
+        "label":  "Posko Karhutla Kemenhut (Telepon)",
+        "destination":  "021-5704618",
+        "kind":  "phone",
+        "scope":  "Nasional",
+        "sourceUrl":  "https://www.kehutanan.go.id/pers/cek-informasi-terbaru-karhutla-kemenhut-di-sini",
+        "checkedAt":  "2026-10-28",
+        "availability":  "public"
+    },
+    {
+        "id":  "kemenhut-posko-wa",
+        "label":  "Posko Karhutla Kemenhut (WhatsApp)",
+        "destination":  "+62 8131-00-35000",
+        "kind":  "whatsapp",
+        "scope":  "Nasional",
+        "sourceUrl":  "https://www.kehutanan.go.id/pers/cek-informasi-terbaru-karhutla-kemenhut-di-sini",
+        "checkedAt":  "2026-10-28",
+        "availability":  "public"
+    },
+    {
+        "id":  "kemenhut-posko-email",
+        "label":  "Posko Karhutla Kemenhut (Email)",
+        "destination":  "posko.karhutla@kehutanan.go.id",
+        "kind":  "email",
+        "scope":  "Nasional",
+        "sourceUrl":  "https://www.kehutanan.go.id/pers/cek-informasi-terbaru-karhutla-kemenhut-di-sini",
+        "checkedAt":  "2026-10-28",
+        "availability":  "public"
+    },
+    {
+        "id":  "darurat-112",
+        "label":  "Panggilan Darurat 112 (Regional Komdigi)",
+        "destination":  "112",
+        "kind":  "phone",
+        "scope":  "Regional (tergantung wilayah)",
+        "sourceUrl":  "https://layanan112.komdigi.go.id/",
+        "checkedAt":  "2026-10-28",
+        "availability":  "unconfirmed"
+    },
+    {
+        "id":  "bnpb-callcenter-117",
+        "label":  "Call Center BNPB (Telepon)",
+        "destination":  "117",
+        "kind":  "phone",
+        "scope":  "Nasional",
+        "sourceUrl":  "https://www.bnpb.go.id/kontak",
+        "checkedAt":  "2026-10-29",
+        "availability":  "public"
+    },
+    {
+        "id":  "bnpb-pusdalops-tel",
+        "label":  "Pusdalops BNPB (Telepon)",
+        "destination":  "021-29827444",
+        "kind":  "phone",
+        "scope":  "Nasional",
+        "sourceUrl":  "https://www.bnpb.go.id/kontak",
+        "checkedAt":  "2026-10-29",
+        "availability":  "public"
+    },
+    {
+        "id":  "bnpb-pusdalops-email",
+        "label":  "Pusdalops BNPB (Email)",
+        "destination":  "pusdalops@bnpb.go.id",
+        "kind":  "email",
+        "scope":  "Nasional",
+        "sourceUrl":  "https://www.bnpb.go.id/kontak",
+        "checkedAt":  "2026-10-29",
+        "availability":  "public"
+    },
+    {
+        "id":  "basarnas-darurat-115",
+        "label":  "Basarnas Panggilan Darurat SAR (Telepon)",
+        "destination":  "115",
+        "kind":  "phone",
+        "scope":  "Nasional",
+        "sourceUrl":  "https://basarnas.go.id/",
+        "checkedAt":  "2026-10-29",
+        "availability":  "public"
+    },
+    {
+        "id":  "bpba-aceh-tel",
+        "label":  "Badan Penanggulangan Bencana Aceh (Telepon Kantor)",
+        "destination":  "0651-34783",
+        "kind":  "phone",
+        "scope":  "Provinsi Aceh",
+        "sourceUrl":  "https://bpba.acehprov.go.id/halaman/profil-ppid",
+        "checkedAt":  "2026-10-29",
+        "availability":  "public"
+    },
+    {
+        "id":  "bpba-aceh-wa",
+        "label":  "Badan Penanggulangan Bencana Aceh (WhatsApp Pusdalops)",
+        "destination":  "+62 813-6066-9111",
+        "kind":  "whatsapp",
+        "scope":  "Provinsi Aceh",
+        "sourceUrl":  "https://bpba.acehprov.go.id/halaman/profil-ppid",
+        "checkedAt":  "2026-10-29",
+        "availability":  "public"
+    },
+    {
+        "id":  "bpbd-riau-tel",
+        "label":  "BPBD Provinsi Riau (Telepon Seluler / Pusdalops)",
+        "destination":  "0811-7612-000",
+        "kind":  "phone",
+        "scope":  "Provinsi Riau",
+        "sourceUrl":  "https://bpbd.riau.go.id/",
+        "checkedAt":  "2026-10-29",
+        "availability":  "public"
+    },
+    {
+        "id":  "bpbd-riau-office-tel",
+        "label":  "BPBDPK Provinsi Riau (Telepon Kantor)",
+        "destination":  "0761-855734",
+        "kind":  "phone",
+        "scope":  "Provinsi Riau",
+        "sourceUrl":  "https://ppid.riau.go.id/informasi-publik/1287/profil-badan-penanggulangan-bencana-daerah-dan-pemadam-kebakaran-%28bpbdpk%29-provinsi-riau",
+        "checkedAt":  "2026-10-29",
+        "availability":  "public"
+    },
+    {
+        "id":  "bpbd-jambi-tel",
+        "label":  "BPBD Provinsi Jambi (Telepon Kantor)",
+        "destination":  "0741-5913258",
+        "kind":  "phone",
+        "scope":  "Provinsi Jambi",
+        "sourceUrl":  "https://bpbd.jambiprov.go.id/kontak/",
+        "checkedAt":  "2026-10-29",
+        "availability":  "public"
+    },
+    {
+        "id":  "bpbd-jambi-email",
+        "label":  "BPBD Provinsi Jambi (Email)",
+        "destination":  "bpbd@jambiprov.go.id",
+        "kind":  "email",
+        "scope":  "Provinsi Jambi",
+        "sourceUrl":  "https://bpbd.jambiprov.go.id/kontak/",
+        "checkedAt":  "2026-10-29",
+        "availability":  "public"
+    },
+    {
+        "id":  "bpbd-kalbar-tel",
+        "label":  "BPBD Provinsi Kalimantan Barat (Telepon Kantor)",
+        "destination":  "0561-744219",
+        "kind":  "phone",
+        "scope":  "Provinsi Kalimantan Barat",
+        "sourceUrl":  "https://bpbd.kalbarprov.go.id/",
+        "checkedAt":  "2026-10-29",
+        "availability":  "public"
+    },
+    {
+        "id":  "bpbd-kalbar-email",
+        "label":  "BPBD Provinsi Kalimantan Barat (Email)",
+        "destination":  "bpbdprovinsikalimantanbarat@gmail.com",
+        "kind":  "email",
+        "scope":  "Provinsi Kalimantan Barat",
+        "sourceUrl":  "https://bpbd.kalbarprov.go.id/",
+        "checkedAt":  "2026-10-29",
+        "availability":  "public"
+    },
+    {
+        "id":  "bpbpk-kalteng-tel",
+        "label":  "BPBPK Provinsi Kalimantan Tengah (Telepon Kantor)",
+        "destination":  "0536-3235428",
+        "kind":  "phone",
+        "scope":  "Provinsi Kalimantan Tengah",
+        "sourceUrl":  "https://kalteng.go.id/page/72/kepala-badan",
+        "checkedAt":  "2026-10-29",
+        "availability":  "public"
+    },
+    {
+        "id":  "bpbd-dki-tel",
+        "label":  "BPBD Provinsi DKI Jakarta (Telepon Pusdalops)",
+        "destination":  "021-6344766",
+        "kind":  "phone",
+        "scope":  "Provinsi DKI Jakarta",
+        "sourceUrl":  "https://bpbd.jakarta.go.id/",
+        "checkedAt":  "2026-10-29",
+        "availability":  "public"
+    },
+    {
+        "id":  "bpbd-jabar-tel",
+        "label":  "BPBD Provinsi Jawa Barat (Telepon Kantor)",
+        "destination":  "022-7313267",
+        "kind":  "phone",
+        "scope":  "Provinsi Jawa Barat",
+        "sourceUrl":  "https://bpbd.jabarprov.go.id/tentangkami",
+        "checkedAt":  "2026-10-29",
+        "availability":  "public"
+    },
+    {
+        "id":  "bpbd-jabar-email",
+        "label":  "BPBD Provinsi Jawa Barat (Email)",
+        "destination":  "bpbd@jabarprov.go.id",
+        "kind":  "email",
+        "scope":  "Provinsi Jawa Barat",
+        "sourceUrl":  "https://bpbd.jabarprov.go.id/tentangkami",
+        "checkedAt":  "2026-10-29",
+        "availability":  "public"
+    },
+    {
+        "id":  "bpbd-jateng-tel",
+        "label":  "BPBD Provinsi Jawa Tengah (Telepon Kantor)",
+        "destination":  "024-3519927",
+        "kind":  "phone",
+        "scope":  "Provinsi Jawa Tengah",
+        "sourceUrl":  "https://bpbd.jatengprov.go.id/",
+        "checkedAt":  "2026-10-29",
+        "availability":  "public"
+    },
+    {
+        "id":  "bpbd-diy-tel",
+        "label":  "BPBD D.I. Yogyakarta (Telepon Pusdalops)",
+        "destination":  "0274-555585",
+        "kind":  "phone",
+        "scope":  "D.I. Yogyakarta",
+        "sourceUrl":  "https://bpbd.jogjaprov.go.id/kontak",
+        "checkedAt":  "2026-10-29",
+        "availability":  "public"
+    },
+    {
+        "id":  "bpbd-diy-wa",
+        "label":  "BPBD D.I. Yogyakarta (WhatsApp Pusdalops)",
+        "destination":  "+62 274-555584",
+        "kind":  "whatsapp",
+        "scope":  "D.I. Yogyakarta",
+        "sourceUrl":  "https://bpbd.jogjaprov.go.id/kontak",
+        "checkedAt":  "2026-10-29",
+        "availability":  "public"
+    },
+    {
+        "id":  "bpbd-bali-tel",
+        "label":  "BPBD Provinsi Bali (Telepon Kantor)",
+        "destination":  "0361-245397",
+        "kind":  "phone",
+        "scope":  "Provinsi Bali",
+        "sourceUrl":  "https://bpbd.baliprov.go.id/",
+        "checkedAt":  "2026-10-29",
+        "availability":  "public"
+    },
+    {
+        "id":  "bpbd-bali-email",
+        "label":  "BPBD Provinsi Bali (Email)",
+        "destination":  "bpbd@baliprov.go.id",
+        "kind":  "email",
+        "scope":  "Provinsi Bali",
+        "sourceUrl":  "https://bpbd.baliprov.go.id/",
+        "checkedAt":  "2026-10-29",
+        "availability":  "public"
+    }
+];
