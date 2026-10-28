@@ -18,3 +18,9 @@ apps/qvac-spike/qvac/addons.manifest.json
 .env
 .env.*
 !.env.example
+# Signing material and credentials must never be committed (keys live outside the repo).
+*.jks
+*.keystore
+*.p12
+*.pfx
+*.dpapi
