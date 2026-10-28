@@ -27,16 +27,21 @@ Tidak ada publish, deploy, pengiriman laporan, atau kontak instansi. Belum ada p
 
 ## Bukti Build Final Android
 
-Build release Android telah berhasil diselesaikan melalui `scripts/Build-Niragni.ps1` (saat kompilasi masih bernama "Bara"; skrip telah diganti nama) dan diverifikasi dengan Android SDK build-tools 36.0.0 (`aapt` dan `apksigner`):
-- **Artefak APK**: `artifacts/bara-android.apk` (240.264.749 bytes, dipertahankan sebagai riwayat; APK bernama Niragni memerlukan rebuild)
-- **SHA-256**: `BB96C3ABDF6152E254327DF016DDD57BC76A71E1F0B9EEE5BA34E1B2E3F84E5F`
-- **Package**: `com.niragni.bara` (versionCode 1, versionName 1.0.0)
+Build release Android (bernama tampilan **Niragni**) telah berhasil diselesaikan melalui `scripts/Build-Niragni.ps1` dengan **release signing** dan diverifikasi dengan Android SDK build-tools 36.0.0 (`aapt` dan `apksigner`). Build exit 0 dalam 13m 5s (portable Node 22.21.1, JBR 21, NDK r29):
+- **Artefak APK**: `artifacts/niragni-android.apk` (240.268.821 bytes)
+- **SHA-256**: `04FE8B9CE8E4FBF8811940F3F77A98B02BDEB785A74555C325B47BC024B198C1`
+- **Label aplikasi**: `Niragni`
+- **Package**: `com.niragni.bara` (versionCode 1, versionName 1.0.0) — bundle ID dipertahankan demi kontinuitas data
 - **SDK**: minSdkVersion 31, targetSdkVersion 36, compileSdkVersion 36
-- **Arsitektur**: Murni `arm64-v8a` (60 shared libraries termasuk QVAC native runtime dan GGML CPU/OpenCL/Vulkan backend)
-- **JS Bundle**: `assets/index.android.bundle` (21.787.348 bytes uncompressed)
-- **Privasi & Backup**: `allowBackup="false"`, `fullBackupContent="false"`, data extraction rules aktif (`@xml/bara_data_extraction_rules`)
+- **Arsitektur**: Murni `arm64-v8a` (0 ABI lain; 60 shared library termasuk BareKit + QVAC/GGML native runtime)
+- **JS Bundle**: `assets/index.android.bundle` (~20.78 MB, tertanam untuk peluncuran offline tanpa Metro)
+- **Privasi & Backup**: `allowBackup="false"`
 - **Native Library Requirement**: `libOpenCL.so` diset opsional (`required="false"`)
-- **Queries**: Skema `tel`, `mailto`, dan paket `com.whatsapp`
-- **Signing**: APK Signature Scheme v2 valid, sertifikat debug RSA 2048-bit (SHA-256 `fac61745dc0903786fb9ede62a962b399f7348f0bb6f899b8332667591033b9c`)
+- **Queries**: Skema `tel`, `mailto`, `https`, dan paket `com.whatsapp`
+- **Signing**: APK Signature Scheme **v2 valid**, Signer DN `CN=Niragni`, **sertifikat rilis RSA 4096-bit SHA-256 `6cb72d16e72b2fe4937e17e6ce46b8b191a8f230df26d7454c7bd5e4adf64324`** (berbeda dari sertifikat debug lama `fac61745dc0903786fb9ede62a962b399f7348f0bb6f899b8332667591033b9c`). Kunci rilis privat berada di luar repo (`%USERPROFILE%\.niragni\signing`), kata sandi terenkripsi DPAPI CurrentUser.
+- **Direktori kanal**: 25 entri (24 `public` + 1 `unconfirmed` 112) di-bundle sebagai data statis bertipe di `src/core/channel-directory.ts`.
+
+APK debug "Bara" sebelumnya dipertahankan sebagai riwayat di `artifacts/bara-android.apk` (SHA-256 `BB96C3ABDF6152E254327DF016DDD57BC76A71E1F0B9EEE5BA34E1B2E3F84E5F`, sertifikat debug `fac61745...`). Karena sertifikat rilis berbeda dari debug, pemasangan di atas build debug lama memerlukan penanganan manual pengguna; TIDAK ada install/uninstall yang dilakukan.
+
 
 *Catatan pembatas*: Bukti kompilasi statis dan APK ini membuktikan kelengkapan konfigurasi dan biner Android, namun pengujian fungsional pada handset fisik (Xiaomi 14T), cold/warm inference offline, dan latensi <10s tetap ditunda dan belum diuji.

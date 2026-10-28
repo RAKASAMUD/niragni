@@ -89,3 +89,69 @@ Commit `87848c3` on `main`:
   syntax errors. No test suites / device / emulator / browser validation were
   run (deferred by user); no test pass is claimed. No native build was run this
   dispatch (deferred). No secrets read/printed/committed.
+
+
+---
+
+# FINAL DELIVERY (dispatch task_1ae86e7af5c0)
+
+## Channel directory integrated
+- Bundled the reviewed AGY 25-entry Indonesia emergency-channel set as typed
+  static data at `apps/qvac-spike/src/core/channel-directory.ts` (inside the
+  Expo/Metro root — not imported from docs), and refactored
+  `src/core/channels.ts` to use it. 24 `public` + 1 `unconfirmed` (national 112).
+  Original national IDs and every source URL/kind/availability preserved.
+  "public" = officially listed, never proven operational; dialer/share stays an
+  explicit user action with no auto-send/receipt. Commit `019f074`.
+- Tracked the 4 reviewed AGY files (channels JSON source-of-truth, sources +
+  28-gap checklist, iOS handoff, agy-release-prep). Commit `51df622`.
+
+## Final release build (ONE real build, exit 0)
+- `scripts/Build-Niragni.ps1` default release signing, fresh prebuild, portable
+  Node 22.21.1 / JBR 21 / NDK r29, `--no-daemon`. **BUILD SUCCESSFUL in 13m 5s**,
+  fail-closed release path confirmed (`:app:validateSigningRelease` ran). No
+  passwords in argv/logs; store password read from the DPAPI blob at build time.
+
+## APK verification (aapt + apksigner, build-tools 36.0.0)
+- Path: `artifacts/niragni-android.apk`
+- Size: 240,268,821 bytes
+- SHA-256: `04FE8B9CE8E4FBF8811940F3F77A98B02BDEB785A74555C325B47BC024B198C1`
+- Label: **Niragni**; package `com.niragni.bara`; versionCode 1 / 1.0.0
+- minSdk 31, targetSdk 36, compileSdk 36
+- ABI: pure `arm64-v8a` (0 other ABIs; 60 native `.so`, incl. BareKit + QVAC/GGML)
+- Embedded JS: `assets/index.android.bundle` ~20.78 MB (offline, no Metro)
+- `allowBackup="false"`; `uses-native-library libOpenCL.so required="false"`
+- `<queries>`: `com.whatsapp` + schemes `tel`/`mailto`/`https` (+ `bara` deeplink)
+- Signature: **APK Signature Scheme v2 = true**; Signer DN `CN=Niragni`;
+  **cert SHA-256 `6cb72d16e72b2fe4937e17e6ce46b8b191a8f230df26d7454c7bd5e4adf64324`
+  = the new release cert (NOT the debug `fac61745...`).**
+
+## Signing key (recorded; no secrets)
+- Private key + DPAPI-encrypted password live OUTSIDE the repo at
+  `%USERPROFILE%\.niragni\signing\` (`niragni-release.jks` +
+  `niragni-release.store.dpapi`), ACL-restricted to the current user + SYSTEM.
+- Alias `niragni`, `CN=Niragni`, RSA 4096, SHA384withRSA, validity to 2054.
+- Password is DPAPI CurrentUser — tied to THIS Windows account/profile; it does
+  NOT decrypt on another PC/account. **No backup/export performed** and none
+  claimed. Safe backup guidance: copy the whole `.niragni\signing` folder to an
+  encrypted, user-controlled medium AND keep the plaintext password in the
+  user's own password manager if cross-machine signing is ever needed (not done
+  here; no cloud/GitHub secret setup).
+- No install/uninstall performed; the release cert differs from the old debug
+  cert, so installing over an existing debug build needs separate manual user
+  handling later (draft data must not be risked).
+
+## iOS
+- Consumed `docs/ios-build-handoff.md` only. Mac/Xcode/account/device are
+  unavailable on this Windows host, so **no iOS binary is built or claimed**.
+
+## Git / remote
+- All work on `main`, pushed normally (no force/rewrite). Original 20 import
+  commits (through `e621894`) and `ef0df8f` remain ancestors; `spike/qvac`
+  unchanged at `29c310f`.
+
+## Limits (no fabrication)
+- `tsc --noEmit` exit 0 after integration. No test suites / device / emulator /
+  browser / install were run; the user's testing deferral stands and no test
+  pass is claimed. No model weights downloaded. Build success proves the APK was
+  built and correctly release-signed, not on-device inference/compatibility.
