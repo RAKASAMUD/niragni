@@ -6,6 +6,7 @@
 - **Core AI feature:** on-device multimodal inference (text + photo → structured Indonesian draft) with `@qvac/sdk` + a quantized SmolVLM2-500M GGUF model
 - **Platform:** Android (arm64-v8a), React Native / Expo, TypeScript
 - **Demo video (internet disconnected):** _link added at submission_ — see [`docs/SUBMISSION.md`](docs/SUBMISSION.md)
+- **Landing page & APK download:** [`web/`](web) (Next.js; deploy on Vercel with Root Directory `web`) · APK on [GitHub Releases](https://github.com/RAKASAMUD/niragni/releases)
 
 ## Submission checklist → where to find it
 
@@ -90,6 +91,7 @@ apps/qvac-spike/
   src/ui/         theme + components
   src/__tests__/  Jest suites
 docs/             SUBMISSION.md, implementation-status.md, QVAC audit, offline test protocol
+web/              Next.js landing page for judges (install steps, QVAC table, demo slot)
 scripts/          Android build script, device inventory tooling
 ```
 
