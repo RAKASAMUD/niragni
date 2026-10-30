@@ -45,3 +45,16 @@ describe('AI response JSON schema (grammar-constrained decoding)', () => {
     expect(schema.properties.observations.items.properties.text.maxLength).toBe(200);
   });
 });
+
+import { containsTemplatePlaceholder } from '../core/ai';
+
+describe('template placeholder guard', () => {
+  it('flags echoed <placeholder> text', () => {
+    expect(containsTemplatePlaceholder('<ringkasan faktual dari catatan warga>')).toBe(true);
+    expect(containsTemplatePlaceholder('<satu pengamatan yang tertulis di catatan warga>')).toBe(true);
+  });
+  it('allows normal text, including comparisons', () => {
+    expect(containsTemplatePlaceholder('Asap putih tebal dari arah kebun')).toBe(false);
+    expect(containsTemplatePlaceholder('suhu < 30 dan angin > 5')).toBe(false);
+  });
+});

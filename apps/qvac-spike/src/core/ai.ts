@@ -25,7 +25,7 @@ import { formatTimeWithZone } from './timeValidation';
 
 export const MAX_RAW_TEXT_CHARS = 4000;
 export const MAX_INPUT_PHOTOS = 3;
-export const PROMPT_VERSION = 'v0.9.3-indonesian-fire-draft-concrete-example';
+export const PROMPT_VERSION = 'v0.9.4-indonesian-fire-draft-no-template';
 
 const ObservationSchema = z
   .object({
@@ -64,6 +64,14 @@ export function buildResponseJsonSchema(): Record<string, unknown> {
   (item.properties as Record<string, Record<string, unknown>>).sourceRef.maxLength = 80;
   props.missingFields.maxItems = 5;
   return schema;
+}
+
+/**
+ * True when text looks like a copied "<placeholder>" from a prompt template. Small models sometimes
+ * echo such text verbatim, which would put template text into a citizen's report.
+ */
+export function containsTemplatePlaceholder(text: string): boolean {
+  return /<[^\s<>][^<>\n]{1,}[^\s<>]>/.test(text);
 }
 
 export class AiDraftGenerator {
@@ -207,26 +215,9 @@ export class AiDraftGenerator {
       `5a. 'uncertain' harus berupa true atau false (tanpa tanda kutip).\n` +
       `6. 'questions' berisi maksimal 3 pertanyaan pelengkap yang sopan dan relevan untuk melengkapi draf laporan.\n` +
       `7. DILARANG menambahkan field di luar summary, observations, missingFields, questions.\n\n` +
-      `[BENTUK KELUARAN (teks dalam tanda <...> hanya penunjuk; ganti dengan isi dari KONTEKS INPUT WARGA di bawah, jangan menyalinnya)]:\n` +
-      `{\n` +
-      `  "summary": "<ringkasan faktual dari catatan warga>",\n` +
-      `  "observations": [\n` +
-      `    {\n` +
-      `      "text": "<satu pengamatan yang tertulis di catatan warga>",\n` +
-      `      "source": "user",\n` +
-      `      "sourceRef": "catatan_pengguna",\n` +
-      `      "uncertain": false\n` +
-      `    },\n` +
-      `    {\n` +
-      `      "text": "<satu fakta dari waktu atau lokasi yang tersedia>",\n` +
-      `      "source": "metadata",\n` +
-      `      "sourceRef": "waktu_pengamatan",\n` +
-      `      "uncertain": false\n` +
-      `    }\n` +
-      `  ],\n` +
-      `  "missingFields": ["<informasi yang belum diketahui>"],\n` +
-      `  "questions": ["<pertanyaan pelengkap>"]\n` +
-      `}\n\n` +
+      `[ISI KELUARAN]:\n` +
+      `Keluarkan satu objek JSON dengan empat field: 'summary' (teks ringkasan faktual), 'observations' (daftar objek yang masing-masing berisi 'text', 'source', 'sourceRef', 'uncertain'), 'missingFields' (daftar teks informasi yang belum diketahui), dan 'questions' (daftar teks pertanyaan pelengkap).\n` +
+      `Semua teks wajib ditulis sendiri dalam Bahasa Indonesia berdasarkan KONTEKS INPUT WARGA di bawah. Jangan menulis tanda < atau >.\n\n` +
       `[KONTEKS INPUT WARGA]:\n` +
       `- Catatan Warga: ${rawText}\n` +
       `- Perkiraan Arah/Jarak Kejadian: ${incidentLoc}\n` +
@@ -278,6 +269,17 @@ export class AiDraftGenerator {
     }
 
     const { summary, observations, missingFields, questions } = parseResult.data;
+
+    // Reject output that merely echoes template placeholders instead of describing the input.
+    const allTexts = [
+      summary,
+      ...observations.flatMap((o) => [o.text, o.sourceRef]),
+      ...missingFields,
+      ...questions
+    ];
+    if (allTexts.some(containsTemplatePlaceholder)) {
+      throw new Error('Hasil AI hanya menyalin teks contoh dan tidak menggambarkan catatan Anda. Coba lagi.');
+    }
 
     // 2. Deep factual provenance validation against actual input data
     const validPhotoIds = new Set((report.attachments || []).map((a) => a.id));
