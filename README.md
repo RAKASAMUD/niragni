@@ -5,7 +5,7 @@
 - **Track:** Offline AI Apps
 - **Core AI feature:** on-device multimodal inference (text + photo → structured Indonesian draft) with `@qvac/sdk` + a quantized SmolVLM2-500M GGUF model
 - **Platform:** Android (arm64-v8a), React Native / Expo, TypeScript
-- **Demo video (internet disconnected):** _link added at submission_ — see [`docs/SUBMISSION.md`](docs/SUBMISSION.md)
+- **Demo video (internet disconnected):** [Google Drive folder](https://drive.google.com/drive/folders/1el4nVyneZec2Z-NcelraZa_u1oWaOKtj?usp=sharing)
 - **Landing page & APK download:** [`web/`](web) (Next.js; deploy on Vercel with Root Directory `web`) · APK on [GitHub Releases](https://github.com/RAKASAMUD/niragni/releases)
 
 ## Submission checklist → where to find it
@@ -103,7 +103,8 @@ scripts/          Android build script, device inventory tooling
 | 250 / 250 Jest tests pass (logic, with native modules mocked) | ✅ verified |
 | Release APK builds, arm64-v8a, release-signed, 86 MB after compression | ✅ verified (see `docs/implementation-status.md`) |
 | Draft/photo/location/delete/persistence flows on a Xiaomi 14T | ✅ device-tested earlier build; 4 bugs found and fixed in source |
-| Model import via Android file picker (SAF) | 🔧 fixed in source; re-test on device pending |
+| Model import via Android file picker (SAF) | ✅ verified on device (fixed and re-tested) |
+| Model SHA-256 verification + local load check ("Lolos cek lokal") | ✅ verified on device |
 | **Offline on-device inference with network disconnected** | ⏳ in progress — evidence will be in the demo video |
 | Latency, peak RAM, GPU backend, iOS | ❌ not measured / not built |
 

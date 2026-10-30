@@ -30,6 +30,8 @@ Seluruh isi repo dibangun selama event (commit pertama 28 Okt 21:39 WIB, commit 
 
 ## 3. Demo video
 
+**Link:** https://drive.google.com/drive/folders/1el4nVyneZec2Z-NcelraZa_u1oWaOKtj?usp=sharing
+
 > ⚠️ **BELUM ADA — ini kerjaan paling kritis sebelum submit.** Harus menunjukkan produk bekerja + fitur AI inti **dengan internet dimatikan** di perangkat. Lihat README bagian "Status paling jujur saat ini": inference offline belum pernah dibuktikan di HP fisik sampai saat dokumen ini ditulis. Urutan rekam yang disarankan:
 > 1. Tampilkan APK terpasang + versi/SHA256-nya di layar.
 > 2. Buat draf baru, isi catatan + foto.
