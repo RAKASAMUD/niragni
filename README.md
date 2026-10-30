@@ -105,8 +105,21 @@ scripts/          Android build script, device inventory tooling
 | Draft/photo/location/delete/persistence flows on a Xiaomi 14T | ✅ device-tested earlier build; 4 bugs found and fixed in source |
 | Model import via Android file picker (SAF) | ✅ verified on device (fixed and re-tested) |
 | Model SHA-256 verification + local load check ("Lolos cek lokal") | ✅ verified on device |
-| **Offline on-device inference with network disconnected** | ⏳ in progress — evidence will be in the demo video |
+| **Offline on-device inference with network disconnected** | 🟡 partially verified: the model loads and the native QVAC worker runs on the phone's CPU; end-to-end draft latency is still being tuned (see [About the demo video](#about-the-demo-video)) |
 | Latency, peak RAM, GPU backend, iOS | ❌ not measured / not built |
+
+## About the demo video
+
+The demo video is linked at the top of this README and was recorded on a physical Android phone (Xiaomi 14T).
+
+**Verified on the device**
+- Model + projector imported through the Android file picker and passing the local check (size, SHA-256, load)
+- The report flow: note, photos, location and time, saved locally in SQLite
+- The on-device AI draft is started through `@qvac/sdk`, and the native worker runs on the phone's CPU (observed with `adb top`: eight busy `bare-worklet` threads)
+- The manual fallback: the report can always be completed and saved without AI, and nothing is sent without the user's action
+
+**Partially verified: AI generation latency**
+Generation runs on the phone's CPU and is slow on this device. During our measurements the phone's RAM and swap were under heavy pressure, which slows token generation a lot. We have capped the output length (`predict`) and are tuning thread count and memory use. Real, unedited timings will be added here once measured.
 
 ## Device, memory & licenses
 
