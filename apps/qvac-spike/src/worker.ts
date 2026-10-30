@@ -12,6 +12,19 @@ import {
 } from '@qvac/sdk';
 import { ModelCandidate, InferenceTimingStats, InferenceResult } from './types';
 
+/** Structured-output constraint: llama.cpp converts the JSON schema to a grammar and enforces it while decoding. */
+export interface InferenceResponseFormat {
+  readonly type: 'json_schema';
+  readonly json_schema: {
+    readonly name: string;
+    readonly schema: Record<string, unknown>;
+  };
+}
+
+export interface InferenceOptions {
+  readonly responseFormat?: InferenceResponseFormat;
+}
+
 export interface InferenceCallbacks {
   readonly onChunk?: (chunk: string) => void;
   readonly onFirstChunk?: (latencyMs: number) => void;
@@ -132,7 +145,8 @@ export class QvacNativeWorker {
   public async runInference(
     prompt: string,
     photoFilePath?: string | string[],
-    callbacks?: InferenceCallbacks
+    callbacks?: InferenceCallbacks,
+    options?: InferenceOptions
   ): Promise<InferenceResult> {
     if (!this.currentModelId) {
       throw new Error('Tidak ada model QVAC yang dimuat. Muat model terlebih dahulu sebelum inferensi.');
@@ -160,7 +174,8 @@ export class QvacNativeWorker {
     const run = completion({
       modelId: this.currentModelId,
       history,
-      stream: true
+      stream: true,
+      ...(options?.responseFormat ? { responseFormat: options.responseFormat } : {})
     });
 
     this.currentRequestId = run.requestId;

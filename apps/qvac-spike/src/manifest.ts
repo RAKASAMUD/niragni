@@ -27,7 +27,7 @@ export const CANDIDATE_SMOLVLM2: ModelCandidate = {
   recommendedConfig: {
     ctx_size: 8192,
     device: 'cpu', // CPU default until GPU Vulkan is physically tested on Mali-G615
-    predict: 640,
+    predict: 1024,
     stop_sequences: ['\n\n\n', '</s>', '<|im_end|>'],
     temp: 0.2
   }
@@ -56,7 +56,7 @@ export const CANDIDATE_VISIONPSY: ModelCandidate = {
     ctx_size: 8192,
     image_no_upscale: 'on', // Required for Flash variant to avoid degradation per docs
     device: 'cpu',
-    predict: 640,
+    predict: 1024,
     stop_sequences: ['\n\n\n', '</s>', '<|im_end|>'],
     temp: 0.2
   }

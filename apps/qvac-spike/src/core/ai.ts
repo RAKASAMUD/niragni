@@ -47,6 +47,25 @@ const SuggestionSchema = z
   })
   .strict();
 
+/**
+ * JSON schema handed to llama.cpp as a grammar so the model can only emit a structurally valid
+ * draft (valid JSON, source in the allowed enum, correct types, bounded length). Derived from the
+ * Zod schema above so the two cannot drift; extra upper bounds keep generation short on a phone CPU.
+ * The Zod validation and provenance checks still run afterwards on whatever comes back.
+ */
+export function buildResponseJsonSchema(): Record<string, unknown> {
+  const schema = z.toJSONSchema(SuggestionSchema) as Record<string, unknown>;
+  delete schema.$schema;
+  const props = schema.properties as Record<string, Record<string, unknown>>;
+  props.summary.maxLength = 400;
+  props.observations.maxItems = 5;
+  const item = props.observations.items as Record<string, unknown>;
+  (item.properties as Record<string, Record<string, unknown>>).text.maxLength = 200;
+  (item.properties as Record<string, Record<string, unknown>>).sourceRef.maxLength = 80;
+  props.missingFields.maxItems = 5;
+  return schema;
+}
+
 export class AiDraftGenerator {
   private worker: QvacNativeWorker;
   private modelManager: ModelManager;
@@ -117,7 +136,14 @@ export class AiDraftGenerator {
       // 4. Run inference with native QVAC worker
       const inferenceResult = await this.worker.runInference(
         prompt,
-        photoPaths.length > 0 ? photoPaths : undefined
+        photoPaths.length > 0 ? photoPaths : undefined,
+        undefined,
+        {
+          responseFormat: {
+            type: 'json_schema',
+            json_schema: { name: 'wildfire_draft', schema: buildResponseJsonSchema() }
+          }
+        }
       );
 
       if (this.isCancelled || this.currentGenerationToken !== token) {
@@ -232,7 +258,14 @@ export class AiDraftGenerator {
     try {
       parsedJson = JSON.parse(cleanJson);
     } catch {
-      throw new Error('Hasil AI tidak dapat dibaca sebagai format JSON yang valid.');
+      // Show the start and end of the raw output so a failure on a phone can be diagnosed from the screen.
+      const raw = rawOutput.trim();
+      const head = raw.slice(0, 160).replace(/\s+/g, ' ');
+      const tail = raw.length > 320 ? raw.slice(-160).replace(/\s+/g, ' ') : '';
+      throw new Error(
+        `Hasil AI tidak dapat dibaca sebagai format JSON yang valid. (${raw.length} karakter) Awal: "${head}"` +
+          (tail ? ` Akhir: "${tail}"` : '')
+      );
     }
 
     // 1. Validate against strict Zod schema (rejects extra keys, invalid types, questions > 3)
