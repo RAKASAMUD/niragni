@@ -1,26 +1,74 @@
 # Niragni
 
-Niragni (sebelumnya nama kerja "Bara") membantu warga Indonesia menyiapkan draf laporan dugaan kebakaran dari teks dan foto. Target AI memakai QVAC lokal; aplikasi bukan layanan dispatch dan tidak menganggap berbagi sebagai bukti laporan diterima.
+Niragni (sebelumnya nama kerja "Bara") membantu warga Indonesia menyiapkan draf laporan dugaan kebakaran hutan dan lahan (karhutla) dari catatan teks dan foto — disusun dengan AI yang berjalan **sepenuhnya di perangkat** (QVAC lokal, tanpa backend/cloud). Aplikasi ini adalah alat bantu menyiapkan laporan, bukan layanan dispatch, dan tidak pernah menganggap "berhasil membuka kanal berbagi" sebagai bukti laporan diterima petugas.
 
-## Status
+> 🏆 Dibangun untuk hackathon QVAC/AI Yako (28–30 Oktober 2026). Lihat [`docs/SUBMISSION.md`](docs/SUBMISSION.md) untuk info submission lengkap (problem statement, track, integrasi QVAC, lisensi model, batas offline, dll).
 
-Implementasi produk berada di `apps/qvac-spike` (nama direktori awal dipertahankan sebagai riwayat). Tersedia alur draf, foto, lokasi terpisah, tinjauan AI, pratinjau berbagi, kanal Indonesia, dan pengelolaan model. Tidak memerlukan backend atau akun. Nama tampilan aplikasi adalah **Niragni**; bundle/application ID tetap `com.niragni.bara` agar pemasangan dan data pengguna yang ada tidak hilang (ganti nama tampilan tidak mengubah bundle ID). Namespace penyimpanan lokal (`bara.db`, `bara_media`, `bara_exports`) sengaja dipertahankan demi kontinuitas data.
+## Masalah & target pengguna
 
-Build produk Android final (nama tampilan **Niragni**, release-signed) tersimpan di `artifacts/niragni-android.apk` (240.268.821 bytes, SHA256 `04FE8B9CE8E4FBF8811940F3F77A98B02BDEB785A74555C325B47BC024B198C1`). Bukti inspeksi build-tools 36.0.0 (`aapt` & `apksigner`): label `Niragni`, package `com.niragni.bara`, minSDK 31, targetSDK 36, arsitektur murni ARM64 (`arm64-v8a`, 60 pustaka native termasuk BareKit + QVAC/GGML runtime), embedded JS bundle (`assets/index.android.bundle`, ~20,78 MB) untuk peluncuran offline tanpa Metro, backup dinonaktifkan (`allowBackup="false"`), `libOpenCL.so` opsional (`required="false"`), intent queries `tel`/`mailto`/`https`/`com.whatsapp`, dan ditandatangani kunci **rilis** (APK Signature Scheme v2 valid, sertifikat `CN=Niragni`, SHA-256 `6cb72d16e72b2fe4937e17e6ce46b8b191a8f230df26d7454c7bd5e4adf64324`). Kunci rilis privat berada di luar repo di `%USERPROFILE%\.niragni\signing`, kata sandi terenkripsi Windows DPAPI (CurrentUser). APK debug "Bara" sebelumnya dipertahankan sebagai riwayat di `artifacts/bara-android.apk` (sertifikat debug `fac61745...`); karena sertifikat rilis berbeda, pemasangan di atas build debug lama butuh penanganan manual — tidak ada install/uninstall dilakukan. APK dengan nama tampilan Niragni memerlukan rebuild sumber yang sudah diganti nama.
+Warga yang melihat dugaan kebakaran hutan/lahan sering kesulitan menjelaskan apa yang dilihat, di mana, dan kapan — terutama saat internet buruk/tidak ada. Niragni memisahkan "menyiapkan laporan" dari "menyampaikan laporan": pengguna mencatat teks + foto + lokasi secara lokal, AI (QVAC, offline) membantu merapikan draf terstruktur dalam Bahasa Indonesia, pengguna meninjau dan mengoreksi, baru memilih kanal (Damkar lokal, dll) untuk diteruskan — semua tahap pertama berjalan tanpa jaringan. Lihat [`.context/baca-bara-codex-handoff-json-sebagai/outputs/Bara-PRD.md`](.context/baca-bara-codex-handoff-json-sebagai/outputs/Bara-PRD.md) untuk PRD lengkap (baseline awal, dipertahankan sebagai riwayat).
 
-Batas bukti & status pengujian: Pengujian runtime, instalasi perangkat, dan benchmark ditunda atas permintaan pengguna; keberhasilan kompilasi dan konfigurasi native membuktikan integritas build namun TIDAK membuktikan kompatibilitas fisik handset (mis. Xiaomi 14T), keberhasilan inference teks+foto offline tanpa jaringan, atau latensi di bawah 10 detik. Bobot model tidak dibundel dan belum diunduh pada fase ini. Target iOS dipertahankan di source/config, namun native prebuild pada host Windows ditolak Expo; belum ada binary iOS.
+## Status implementasi
 
-Baseline yang diberikan pengguna berada di `.context/baca-bara-codex-handoff-json-sebagai/outputs/`: `Bara-PRD.md`, `Bara-UI-Spec.md`, `Bara-Verifikasi.md`. Nama berkas baseline ini dipertahankan apa adanya sebagai bukti audit historis. Folder konteks dan skill lokal tidak dimasukkan ke Git.
+Implementasi produk berada di `apps/qvac-spike` (nama direktori awal dipertahankan sebagai riwayat). Tersedia alur: draf teks+foto tanpa login/model/jaringan, lokasi pelapor vs lokasi kejadian terpisah, AI lokal (QVAC) menyusun draf dengan validasi provenance ketat, editor final dengan penanda sumber AI, pratinjau ekspor dengan swafoto pengirim wajib, direktori 9 kanal Damkar kota terverifikasi, dan pengelolaan model (unduh/impor/periksa) dengan verifikasi hash. Tidak memerlukan backend atau akun; semua data di SQLite + file privat aplikasi.
 
-Rencana: [implementasi produk](docs/superpowers/plans/2026-10-28-bara-product.md). Cakupan dan batas bukti: [matriks implementasi](docs/implementation-status.md). Catatan task dan ownership: [progres produk](work/product-progress.md). Bukti spike sebelumnya: [laporan koordinator](work/reports/coordinator.md), audit di `docs/spike`, dan skrip perangkat di `scripts/device`.
+Nama tampilan aplikasi adalah **Niragni**; bundle/application ID tetap `com.niragni.bara` (kontinuitas data dari nama kerja sebelumnya, "Bara"). minSdkVersion 31, targetSdkVersion 36, arsitektur `arm64-v8a` murni.
 
-## Build lokal
+**Riwayat build & pengujian device** (kronologis, lihat [`docs/implementation-status.md`](docs/implementation-status.md) untuk detail penuh):
+1. Build release pertama (29 Okt) — 243 MB, dipasang & dibuka di Xiaomi 14T via wireless ADB.
+2. Pengujian fungsional di Xiaomi 14T (30 Okt) menemukan 4 bug: impor model SAF gagal, status progress macet setelah error impor, waktu tidak divalidasi, label zona waktu pratinjau menyesatkan. Keempatnya diperbaiki di source hari yang sama.
+3. Build APK pengganti dengan kompresi native (30 Okt) — 86,37 MB (turun 64,5%), **belum diinstall/ditest ulang di HP**.
+4. Sesi Claude Code (30 Okt) menjalankan `/ponytail-review` + `/ponytail-audit` dan memperbaiki 9 temuan tambahan — lihat bagian "Apa yang dikerjakan selama event" di bawah.
 
-Jalankan `powershell -ExecutionPolicy Bypass -File scripts/Build-Niragni.ps1` dari root proyek. Skrip memakai Node portable 22.21.1 di `.tools`, JBR Android Studio 21, Android SDK lokal, dan NDK r29 di `.tools`. Dependensi aplikasi harus sudah terpasang dengan lockfile di `apps/qvac-spike`. Skrip melakukan prebuild Android dan kompilasi APK (keluaran `artifacts/niragni-android.apk`) tanpa memasang aplikasi atau menjalankan pengujian. Signing saat ini memakai kunci debug untuk pemasangan lokal.
+⚠️ **Status paling jujur saat ini**: source sudah mencakup semua perbaikan di atas dan lolos `tsc --noEmit` + 250/250 test Jest, tapi **inference AI offline (jaringan dimatikan) belum pernah berhasil dibuktikan di perangkat fisik** — ini sedang dikerjakan sebagai langkah terakhir sebelum deadline. Lihat `docs/SUBMISSION.md` untuk status real-time.
 
-## Batas eksekusi
+## Apa yang dikerjakan selama event (28–30 Oktober 2026)
 
-- Gratis/lokal diutamakan. Ukuran SDK/model besar disampaikan sebelum diunduh.
-- Tidak publish, deploy, mengirim laporan, menelepon, atau menghubungi instansi.
-- Uji handset dimulai setelah APK siap. Build berhasil tidak membuktikan inference perangkat berhasil.
-- Bukti harus menyertakan versi SDK/model/projector, checksum, lisensi, OS/RAM fisik/storage, keadaan jaringan, output dan pengukuran cold/warm.
+Seluruh isi repo ini dibangun selama event (commit pertama 28 Okt 21:39 WIB). Pembangunan dilakukan oleh kombinasi:
+- **Sistem multi-agent (coordinator + worker "Kiro" dan "AGY")**: scaffold Expo/React Native, seluruh UI (`app/**`, `src/ui/**`), seluruh core logic (`src/core/**`, worker QVAC, manifest model), desain UI/tema sesuai Figma, direktori kanal Damkar, build & signing Android, serta 4 perbaikan bug device-QA pertama (impor SAF, status progress, validasi waktu, format zona waktu).
+- **Claude Code (sesi terakhir, 30 Okt)**: audit independen (`/ponytail-review` + `/ponytail-audit`) menemukan dan memperbaiki 9 bug/kebersihan kode tambahan:
+  - Bug path selfie (double-slash) yang membuat **setiap** percobaan berbagi gagal — `src/core/repository.ts`
+  - File sementara hasil crop foto/selfie yang tidak terhapus — `src/core/export.ts`
+  - Direktori kanal yang di-duplikasi manual di tempat lain (risiko drift) — `src/core/channel-selector.ts`
+  - UI notice ganda & logic duplikat di halaman share — `app/report/[id]/share.tsx`
+  - Background transition OS yang keliru membatalkan unduhan model yang sedang berjalan — `src/core/lifecycle.ts`
+  - Waktu UTC mentah yang bocor ke prompt AI dan teks ekspor GPS — `src/core/timeValidation.ts`, `src/core/ai.ts`, `src/core/export.ts`
+  - Hash model yang di-verifikasi ulang dari nol setiap restart app — `src/core/database.ts` (migrasi skema v3), `src/core/models.ts`
+  - Kode mati (file/fungsi tak terpakai) dan 4 dependency native yang tidak pernah diimpor
+  - Fallback tanggal hardcode yang akan menampilkan tanggal yang salah selamanya — `src/ui/format.ts`
+
+Disclosure pihak ketiga: QVAC SDK (`@qvac/sdk`, Apache-2.0), model bobot (SmolVLM2-500M & VisionPsy-Nano-460M, Apache-2.0, dari HuggingFace — **tidak dibundel di repo**, diunduh terpisah), Expo/React Native ecosystem, dan dependency npm lain (lihat `apps/qvac-spike/package.json`). Tidak ada kode berbayar/proprietary di luar yang disebut di atas.
+
+## Setup & build lokal
+
+Prasyarat: Node.js (lihat `apps/qvac-spike/package.json` — Node portable 22.21.1 dipakai saat build, Android build butuh `^22.21.0 || >=24.9.0` per dokumentasi QVAC), Android Studio JBR 21, Android SDK (minSdk 31, targetSdk/compileSdk 36), NDK r29, Windows (build Android di-script khusus Windows; iOS belum pernah dibangun — Expo menolak native prebuild iOS di host Windows).
+
+```powershell
+cd apps/qvac-spike
+npm install
+npm run typecheck   # tsc --noEmit
+npm test            # jest — 250 test, native boundary di-mock
+```
+
+Build APK Android (dari root repo):
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/Build-Niragni.ps1
+```
+Skrip melakukan `expo prebuild --platform android` lalu kompilasi Gradle release-signed (keluaran `artifacts/niragni-android.apk`). Signing release memerlukan keystore lokal di luar repo (`%USERPROFILE%\.niragni\signing`, password terenkripsi DPAPI) — build **fail-closed** (menolak fallback diam-diam ke debug-signing) jika keystore tidak ada; gunakan `-AllowDebugSigning` untuk build debug eksplisit. Skrip tidak memasang aplikasi atau menjalankan test.
+
+Model AI **tidak dibundel** di repo (terlalu besar, lisensi harus diperiksa sebelum distribusi ulang). Unduh manual dari HuggingFace sebelum demo offline — lihat `docs/SUBMISSION.md` bagian "Integrasi QVAC" untuk link, ukuran file, dan SHA-256 pin persis; impor lewat UI aplikasi (Kelola Model → Impor dari penyimpanan).
+
+## Dokumen lain
+
+- [`docs/SUBMISSION.md`](docs/SUBMISSION.md) — info submission lomba lengkap (wajib dibaca juri)
+- [`docs/implementation-status.md`](docs/implementation-status.md) — matriks implementasi & riwayat pengujian device
+- [`docs/spike/qvac-audit.md`](docs/spike/qvac-audit.md) — audit SDK/model/lisensi QVAC
+- [`docs/spike/offline-test-protocol.md`](docs/spike/offline-test-protocol.md) — protokol pengujian offline
+- [`.context/baca-bara-codex-handoff-json-sebagai/outputs/`](.context/baca-bara-codex-handoff-json-sebagai/outputs/) — PRD & UI-spec baseline (tidak masuk Git, lokal saja)
+
+## Batas eksekusi & privasi
+
+- Gratis/lokal diutamakan. Tidak ada backend, akun, atau telemetry.
+- Tidak ada publish/deploy/kirim laporan/telepon/kontak instansi otomatis — semua aksi perlu ketukan eksplisit pengguna.
+- Data (draf, foto, selfie) hanya di SQLite + storage privat aplikasi di perangkat; tidak ada sinkronisasi/cloud.
+- Backup Android dinonaktifkan (`allowBackup="false"`).
