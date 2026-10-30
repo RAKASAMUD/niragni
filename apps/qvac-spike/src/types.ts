@@ -24,6 +24,11 @@ export interface ModelCandidate {
     readonly ctx_size: number;
     readonly image_no_upscale?: 'on' | 'off';
     readonly device?: 'cpu' | 'vulkan' | 'opencl';
+    /** llama.cpp n_predict. Without it generation only stops at EOS or a full context. */
+    readonly predict?: number;
+    /** Hard stop strings, so a model that keeps rambling after the JSON is cut off. */
+    readonly stop_sequences?: readonly string[];
+    readonly temp?: number;
   };
 }
 

@@ -95,6 +95,20 @@ export class QvacNativeWorker {
       config.image_no_upscale = candidate.recommendedConfig.image_no_upscale;
     }
 
+    // Without an explicit `predict` cap the llamacpp-completion plugin generates until the
+    // model emits EOS or the context is full. A 500M model given a long Indonesian schema
+    // prompt frequently does neither, so a run can occupy the whole context window and
+    // appear to hang for many minutes on a phone CPU. Cap it and give it hard stop strings.
+    if (typeof candidate.recommendedConfig.predict === 'number') {
+      config.predict = candidate.recommendedConfig.predict;
+    }
+    if (candidate.recommendedConfig.stop_sequences) {
+      config.stop_sequences = [...candidate.recommendedConfig.stop_sequences];
+    }
+    if (typeof candidate.recommendedConfig.temp === 'number') {
+      config.temp = candidate.recommendedConfig.temp;
+    }
+
     const modelId = await loadModel({
       modelSrc: toNativePath(modelFilePath),
       modelType: 'llamacpp-completion',

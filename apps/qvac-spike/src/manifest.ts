@@ -26,7 +26,10 @@ export const CANDIDATE_SMOLVLM2: ModelCandidate = {
   qvacProjectorConstant: 'MMPROJ_SMOLVLM2_500M_MULTIMODAL_Q8_0',
   recommendedConfig: {
     ctx_size: 8192,
-    device: 'cpu' // CPU default until GPU Vulkan is physically tested on Mali-G615
+    device: 'cpu', // CPU default until GPU Vulkan is physically tested on Mali-G615
+    predict: 640,
+    stop_sequences: ['\n\n\n', '</s>', '<|im_end|>'],
+    temp: 0.2
   }
 };
 
@@ -52,7 +55,10 @@ export const CANDIDATE_VISIONPSY: ModelCandidate = {
   recommendedConfig: {
     ctx_size: 8192,
     image_no_upscale: 'on', // Required for Flash variant to avoid degradation per docs
-    device: 'cpu'
+    device: 'cpu',
+    predict: 640,
+    stop_sequences: ['\n\n\n', '</s>', '<|im_end|>'],
+    temp: 0.2
   }
 };
 
