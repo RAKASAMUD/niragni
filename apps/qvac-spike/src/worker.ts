@@ -17,6 +17,23 @@ export interface InferenceCallbacks {
   readonly onFirstChunk?: (latencyMs: number) => void;
 }
 
+/**
+ * The native llama.cpp loader resolves plain filesystem paths, not URIs. expo-file-system
+ * returns 'file:///...' URIs (and some call sites could leave a '//' inside the path), which
+ * made loadModel fail with "Failed to locate llamacpp-completion model file" even though the
+ * file exists. Strip the scheme, decode, and collapse duplicate slashes before every native call.
+ */
+export function toNativePath(pathOrUri: string): string {
+  let p = pathOrUri;
+  if (p.startsWith('file://')) p = p.slice('file://'.length);
+  try {
+    p = decodeURI(p);
+  } catch {
+    // keep as-is if not valid URI encoding
+  }
+  return p.replace(/\/{2,}/g, '/');
+}
+
 export class QvacNativeWorker {
   private currentModelId: string | null = null;
   private currentCandidateId: string | null = null;
@@ -70,7 +87,7 @@ export class QvacNativeWorker {
 
     const config: Record<string, unknown> = {
       ctx_size: candidate.recommendedConfig.ctx_size,
-      projectionModelSrc: projectorFilePath,
+      projectionModelSrc: toNativePath(projectorFilePath),
       device: candidate.recommendedConfig.device ?? 'cpu'
     };
 
@@ -79,7 +96,7 @@ export class QvacNativeWorker {
     }
 
     const modelId = await loadModel({
-      modelSrc: modelFilePath,
+      modelSrc: toNativePath(modelFilePath),
       modelType: 'llamacpp-completion',
       modelConfig: config,
       onProgress
@@ -108,9 +125,9 @@ export class QvacNativeWorker {
     }
 
     const attachments = Array.isArray(photoFilePath)
-      ? photoFilePath.map((p) => ({ path: p }))
+      ? photoFilePath.map((p) => ({ path: toNativePath(p) }))
       : photoFilePath
-      ? [{ path: photoFilePath }]
+      ? [{ path: toNativePath(photoFilePath) }]
       : [];
     const history = [
       {
