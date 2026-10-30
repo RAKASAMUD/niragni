@@ -28,7 +28,7 @@ export default function Page() {
   return (
     <main className="wrap">
       <nav>
-        <div className="brand"><span className="mark" />NIRAGNI</div>
+        <div className="brand"><img className="mark" src="/logo.png" alt="Niragni" />NIRAGNI</div>
         <div className="links"><a href="#demo">Demo</a><a href="#install">Install</a><a href="#hood">Under the hood</a><a href="#status">Status</a></div>
         <a className="btn sm" href={APK_URL}>Download APK</a>
       </nav>
@@ -45,7 +45,7 @@ export default function Page() {
           <div className="phone">
             <span className="blob b1" /><span className="blob b2" />
             <div className="p-top"><span>9:41</span><span>●  ▰</span></div>
-            <div className="p-brand"><span className="mark" /><div><b>NIRAGNI</b><span>Kamis, 29 Oktober</span></div></div>
+            <div className="p-brand"><img className="mark" src="/logo.png" alt="" /><div><b>NIRAGNI</b><span>Kamis, 29 Oktober</span></div></div>
             <div className="p-card blue"><h4>Melihat<br />Asap?</h4><p>Catat pengamatan Anda.<br />Foto bisa ditambahkan nanti.</p><span className="p-btn">Buat laporan</span>
               <div className="paper"><i style={{ top: 30, width: 34 }} /><i style={{ top: 42, width: 24 }} /></div></div>
             <div className="p-h">Draf Anda <span>1 draf</span></div>
@@ -103,7 +103,7 @@ export default function Page() {
         </div>
       </section>
 
-      <footer><div className="brand"><span className="mark" />NIRAGNI</div><span>Built for AI Yako · Offline AI Apps · <a href={REPO_URL}>github.com/RAKASAMUD/niragni</a></span></footer>
+      <footer><div className="brand"><img className="mark" src="/logo.png" alt="Niragni" />NIRAGNI</div><span>Built for AI Yako · Offline AI Apps · <a href={REPO_URL}>github.com/RAKASAMUD/niragni</a></span></footer>
     </main>
   );
 }
