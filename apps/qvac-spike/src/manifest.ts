@@ -29,7 +29,9 @@ export const CANDIDATE_SMOLVLM2: ModelCandidate = {
     device: 'cpu', // CPU default until GPU Vulkan is physically tested on Mali-G615
     predict: 1024,
     stop_sequences: ['\n\n\n', '</s>', '<|im_end|>'],
-    temp: 0.2
+    temp: 0.2,
+    threads: 4,
+    'threads-batch': 4
   }
 };
 
@@ -58,7 +60,9 @@ export const CANDIDATE_VISIONPSY: ModelCandidate = {
     device: 'cpu',
     predict: 1024,
     stop_sequences: ['\n\n\n', '</s>', '<|im_end|>'],
-    temp: 0.2
+    temp: 0.2,
+    threads: 4,
+    'threads-batch': 4
   }
 };
 

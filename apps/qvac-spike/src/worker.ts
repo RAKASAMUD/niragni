@@ -121,6 +121,14 @@ export class QvacNativeWorker {
     if (typeof candidate.recommendedConfig.temp === 'number') {
       config.temp = candidate.recommendedConfig.temp;
     }
+    // Without this QVAC uses every core. On a 4 big + 4 little CPU each step then waits for the
+    // slow cores, leaving the fast ones idle. Fewer threads keeps the work on the fast cores.
+    if (typeof candidate.recommendedConfig.threads === 'number') {
+      config.threads = candidate.recommendedConfig.threads;
+    }
+    if (typeof candidate.recommendedConfig['threads-batch'] === 'number') {
+      config['threads-batch'] = candidate.recommendedConfig['threads-batch'];
+    }
 
     const modelId = await loadModel({
       modelSrc: toNativePath(modelFilePath),

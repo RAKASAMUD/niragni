@@ -29,6 +29,9 @@ export interface ModelCandidate {
     /** Hard stop strings, so a model that keeps rambling after the JSON is cut off. */
     readonly stop_sequences?: readonly string[];
     readonly temp?: number;
+    /** CPU threads for generation / prompt batch. big.LITTLE phones run best on the big cores only. */
+    readonly threads?: number;
+    readonly 'threads-batch'?: number;
   };
 }
 
