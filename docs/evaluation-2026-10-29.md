@@ -1,0 +1,25 @@
+# Evaluasi Niragni dan syarat penerimaan revisi
+
+Evaluasi berdasarkan source, pengujian Xiaomi sebelum koneksi diputus, dan review perubahan. Bukan klaim kesiapan penggunaan lapangan. Bukti perangkat rinci: `work/reports/non-ai-qa/coordinator-functional-qa.md`. Keputusan revisi: `revision-2026-10-29.md`.
+
+| Area | Temuan dan dampak | Perbaikan yang disyaratkan | Bukti penerimaan |
+| --- | --- | --- | --- |
+| Berbagi | Pemilihan foto pernah disebut dibagikan; pembatalan memunculkan pernah dibagikan. Ini merusak kepercayaan. | Bedakan dipilih, dibatalkan, dialog dibuka, dan penerimaan tidak diketahui. Cegah aksi OS ganda. | Review label dan tes aturan event; uji kembali dialog OS di HP pada APK revisi. |
+| Identitas pengirim | Selfie adalah permintaan baru pengguna. Foto wajah sendiri belum membuktikan identitas atau orang yang benar-benar memegang perangkat. | Selfie kamera wajib sebelum layanan berbagi; draf tetap bisa disimpan. Label identitas belum diverifikasi. Tidak menambah klaim verifikasi/liveness atau backend. | Direct service call tanpa selfie persisted atau dengan foto palsu di argumen harus ditolak sebelum handoff. |
+| Penyimpanan selfie | Berkas baru menambah risiko hilang saat retake, gagal commit, atau startup cleanup. | Nama unik, commit dulu sebelum hapus lama, rollback berkas baru saja, isolasi per laporan, migrasi laporan lama, startup mempertahankan selfie yang masih dirujuk. | Tes kegagalan/cancel/replace/startup/delete, lalu pengujian kamera dan persistensi native. |
+| Privasi foto | Penghapusan EXIF hasil ekspor belum dibuktikan pada APK rilis. Selfie menambah data pribadi. | Penyimpanan privat lokal, selfie tidak masuk AI, ekspor re-encode semua foto dan gagal tertutup tanpa fallback asli. | Tes jalur kegagalan; berkas ekspor aktual harus diperiksa EXIF sebelum menyatakan scrub terbukti. |
+| Kanal bantuan | Nomor nasional/umum dan nomor kota lain menambah distraksi serta risiko salah wilayah. | Kanal aktif hanya Damkar, pilihan kota kejadian eksplisit, gap jujur, sumber dan tanggal tetap dapat diperiksa. Jangan substitusi GPS pelapor atau nomor umum. | Raw dataset, selector dan UI konsisten; tes kota/provinsi/daerah tak tercakup. Nomor tercantum resmi tidak membuktikan sedang operasional. |
+| Kesiapan AI | Berkas SmolVLM2 ada dengan ukuran cocok; belum ada bukti checksum/load/inference offline yang berhasil. `listModels` dapat menyembunyikan cached error menjadi installed. | Error dan status gagal bertahan setelah refresh. Unduhan, checksum, load dan inference dinilai terpisah. | Regresi status/error; pemeriksaan model Xiaomi dan inference teks+foto dengan jaringan mati masih terpisah. |
+| UI | APK uji belum memakai Figma terakhir. OS dark mode dapat menyimpangkan palet; sejumlah ikon masih berlatar; informasi sekunder terlalu dominan. | Pakai aset Figma asli dan UI native interaktif, palet light yang disetujui, grid rincian, navigasi kapsul, notifikasi ringkas dan ikon tanpa BG. | Context/target Figma dan callsite aset; typecheck/build; perbandingan render perangkat masih diperlukan. Font sistem adalah fallback, bukan kecocokan SF Pro Expanded yang terverifikasi. |
+| Data draf | Save/relaunch, tambah/hapus foto dan beberapa pemulihan izin telah berjalan di APK lama. Ini belum membuktikan seluruh revisi. | Pertahankan autosave, batas foto, CAS dan isolasi penghapusan. Jangan menghapus pekerjaan atau data pengguna. | Tes regresi baru dan uji ulang APK baru, terutama navigasi saat simpan berjalan dan error penyimpanan. |
+| Performa | Belum ada pengukuran latensi aplikasi/inference, frame time, RAM puncak atau termal yang memadai. Lamanya build/agent bukan metrik aplikasi. | Jangan menyebut cepat/stabil atau menjanjikan <10 detik tanpa pengukuran. | Benchmark native terpisah; target <10 detik tetap aspirasi pengguna. |
+| Platform | Android rilis berhasil dibangun sebelumnya. iOS baru target konfigurasi/source, belum dibangun atau diuji. | Pertahankan target iOS dan catat perbedaan simulator, perangkat, serta distribusi. | Mac/Xcode dan bukti build/test diperlukan. Akun distribusi tidak dianggap syarat untuk semua bentuk uji lokal. |
+| Bukti rilis | Tes unit, kompilasi dan screenshot Figma tidak membuktikan fitur native atau kompatibilitas model. | Catat checksum artefak, snapshot source, hasil pemeriksaan dan gap secara terpisah. | Pemeriksaan akhir setelah semua source stabil; tidak publish/deploy/push atau kontak instansi. |
+
+## Yang belum boleh dinyatakan selesai
+
+Feasibility inference lokal Indonesia, latensi target, sanitasi EXIF aktual, identitas pengirim terverifikasi, visual APK revisi di HP, dan iOS belum terbukti. Revisi source tidak mengubah batas bukti tersebut.
+
+## Keadaan perangkat setelah sesi uji
+
+Pengguna sengaja memutus HP untuk evaluasi. Draf dan fixture QA ditinggalkan untuk tinjauan; pemulihan akhir izin kamera belum terkonfirmasi. Tidak mengakses ulang perangkat tanpa instruksi lanjutan pengguna. Tidak ada foto pribadi dipilih, laporan dikirim, atau panggilan dilakukan selama pengujian.

@@ -21,6 +21,7 @@ import { Report, AiResult, Suggestion, Observation, Source } from '../product-co
 import { QvacNativeWorker } from '../worker';
 import { ModelManager } from './models';
 import { LifecycleCoordinator, sharedLifecycle } from './lifecycle';
+import { formatTimeWithZone } from './timeValidation';
 
 export const MAX_RAW_TEXT_CHARS = 4000;
 export const MAX_INPUT_PHOTOS = 3;
@@ -158,7 +159,13 @@ export class AiDraftGenerator {
   private buildPrompt(report: Report): string {
     const rawText = (report.rawText || '').trim() || '(Tidak ada catatan teks dari pelapor)';
     const incidentLoc = (report.incidentLocationText || '').trim() || 'belum diketahui';
-    const obsTime = (report.observationTime || '').trim() || 'belum diketahui';
+    // Bug fix: format the stored UTC instant in the report's own timezone before
+    // it reaches the model. Passing the raw ISO string (always UTC) let the AI
+    // read it as if it were local time, producing a wrong hour in WIB/WITA/WIT
+    // (e.g. reporting "pukul 09.35" for an observation made at 16.35 WIB).
+    const obsTime = report.observationTime
+      ? formatTimeWithZone(report.observationTime, report.timezone)
+      : 'belum diketahui';
 
     const photoList = report.attachments.map((a) => a.id).join(', ') || 'tidak ada';
 
@@ -235,13 +242,6 @@ export class AiDraftGenerator {
     // 2. Deep factual provenance validation against actual input data
     const validPhotoIds = new Set((report.attachments || []).map((a) => a.id));
     const userTextPresent = Boolean((report.rawText || '').trim());
-    const validMetadataRefs = new Set([
-      'waktu_pengamatan',
-      'posisi_pelapor',
-      'lokasi_kejadian',
-      'arah_kejadian',
-      'metadata'
-    ]);
 
     for (const obs of observations) {
       if (obs.source === 'ai_visual') {

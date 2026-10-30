@@ -1,14 +1,21 @@
 /**
- * Draft detail. Current content, attachments, and share activity. Share
- * activity reads "Pilihan berbagi dibuka pada …; penerimaan belum diketahui."
- * Actions: edit, share again, delete (with confirmation that clarifies the
- * gallery original is kept).
+ * Draft detail aligned with approved Figma design.
+ * Features:
+ * - Honest share activity labels ("Upaya berbagi dibatalkan", "Pilihan berbagi dibuka").
+ * - Sender Selfie status and thumbnail display.
+ * - Cyan, Peach, and White card presentation.
  */
 import React, { useCallback, useState } from 'react';
-import { ScrollView, View, Image, Alert } from 'react-native';
+import { ScrollView, View, Text, Image, Alert, Pressable } from 'react-native';
 import { useLocalSearchParams, useRouter, useFocusEffect } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 import {
-  Screen, Heading, Body, Caption, Label, Button, Card, StatusPill, Notice, Row, Divider, useTheme, space, radius,
+  Screen,
+  StatusPill,
+  Notice,
+  useTheme,
+  space,
+  radius,
 } from '../../../src/ui/components';
 import { FlowHeader } from '../../../src/ui/FlowHeader';
 import { services, Report, ShareAttempt } from '../../../src/ui/services';
@@ -18,7 +25,7 @@ function shareEventLabel(e: ShareAttempt['event']): string {
   switch (e) {
     case 'share_sheet_opened': return 'Pilihan berbagi dibuka';
     case 'handoff_observed': return 'Handoff teramati oleh sistem';
-    case 'cancelled': return 'Dibatalkan';
+    case 'cancelled': return 'Upaya berbagi dibatalkan';
     default: return 'Tidak diketahui';
   }
 }
@@ -31,8 +38,12 @@ export default function ReportDetail() {
   const [error, setError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
-    try { setReport(await services.getReport(id)); setError(null); }
-    catch (e) { setError(e instanceof Error ? e.message : String(e)); }
+    try {
+      setReport(await services.getReport(id));
+      setError(null);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    }
   }, [id]);
 
   useFocusEffect(useCallback(() => { void load(); }, [load]));
@@ -40,17 +51,22 @@ export default function ReportDetail() {
   const del = useCallback(() => {
     Alert.alert(
       'Hapus draf',
-      'Hapus draf dan salinan fotonya dari Niragni? Foto asli di galeri tetap ada.',
+      'Hapus draf dan foto dari Niragni? Foto asli di galeri tetap ada.',
       [
         { text: 'Batal', style: 'cancel' },
         {
-          text: 'Hapus', style: 'destructive',
+          text: 'Hapus',
+          style: 'destructive',
           onPress: async () => {
-            try { await services.deleteReport(id); router.back(); }
-            catch (e) { setError(e instanceof Error ? e.message : String(e)); }
+            try {
+              await services.deleteReport(id);
+              router.back();
+            } catch (e) {
+              setError(e instanceof Error ? e.message : String(e));
+            }
           },
         },
-      ],
+      ]
     );
   }, [id, router]);
 
@@ -58,69 +74,265 @@ export default function ReportDetail() {
     return (
       <Screen>
         <FlowHeader title="Detail draf" onBack={() => router.back()} />
-        <View style={{ padding: space.lg }}>{error ? <Notice text={error} tone="error" /> : <Caption>Memuat…</Caption>}</View>
+        <View style={{ padding: space.lg }}>
+          {error ? <Notice text={error} tone="error" /> : <Text style={{ color: t.textSecondary }}>Memuat…</Text>}
+        </View>
       </Screen>
     );
   }
+
+  const selfie = report.senderSelfie;
 
   return (
     <Screen>
       <FlowHeader
         title="Detail draf"
         onBack={() => router.back()}
-        right={<Button title="Edit" variant="secondary" onPress={() => router.push(`/report/${id}/edit`)} style={{ paddingVertical: space.sm }} />}
+        right={
+          <Pressable
+            onPress={() => router.push(`/report/${id}/edit`)}
+            style={{
+              backgroundColor: '#FFFFFF',
+              paddingHorizontal: 14,
+              paddingVertical: 6,
+              borderRadius: 16,
+              borderWidth: 1,
+              borderColor: '#DFDEE5',
+            }}
+          >
+            <Text style={{ fontSize: 13, fontWeight: '700', color: '#11121A' }}>
+              Edit
+            </Text>
+          </Pressable>
+        }
       />
-      <ScrollView contentContainerStyle={{ padding: space.lg, paddingBottom: space.xxl * 2 }}>
+      <ScrollView
+        contentContainerStyle={{ padding: space.lg, paddingBottom: space.xxl * 2 }}
+        keyboardShouldPersistTaps="handled"
+      >
         {error ? <Notice text={error} tone="error" /> : null}
-        <Row style={{ marginBottom: space.md }}>
-          <StatusPill label="Tersimpan lokal" kind="neutral" />
-        </Row>
 
-        <Label>Ringkasan</Label>
-        <Card style={{ marginTop: space.xs }}>
-          <Body>{report.reviewedText?.trim() || report.rawText?.trim() || 'Belum ada isi.'}</Body>
-        </Card>
+        {/* RINGKASAN CARD (CYAN) */}
+        <View
+          style={[
+            {
+              backgroundColor: t.cyan,
+              borderRadius: 24,
+              padding: 18,
+              marginBottom: space.lg,
+              gap: 8,
+            },
+            t.cardShadow,
+          ]}
+        >
+          <Text style={{ fontSize: 16, fontWeight: '700', color: '#11121A' }}>
+            Ringkasan pengamatan
+          </Text>
+          <Text style={{ fontSize: 14, color: '#11121A', lineHeight: 20 }}>
+            {report.reviewedText?.trim() || report.rawText?.trim() || 'Belum ada isi laporan.'}
+          </Text>
+        </View>
 
-        <View style={{ height: space.md }} />
-        <Label>Waktu & lokasi</Label>
-        <Card style={{ marginTop: space.xs }}>
-          <Caption>Waktu pengamatan: {formatTimeWithZone(report.observationTime, report.timezone)}</Caption>
-          <Caption style={{ marginTop: space.xs }}>Lokasi kejadian: {report.incidentLocationText?.trim() || 'Belum diisi'}</Caption>
-          <Caption style={{ marginTop: space.xs }}>
-            Posisi pelapor: {report.includeObserverLocation && report.observerLocation ? 'Terisi' : 'Tidak disertakan'}
-          </Caption>
-        </Card>
+        {/* RINCIAN CARD (PEACH) */}
+        <View
+          style={[
+            {
+              backgroundColor: t.peach,
+              borderRadius: 24,
+              padding: 18,
+              marginBottom: space.lg,
+              gap: 12,
+            },
+            t.cardShadow,
+          ]}
+        >
+          <Text style={{ fontSize: 16, fontWeight: '700', color: '#11121A' }}>
+            Waktu & Lokasi
+          </Text>
+          <View style={{ gap: 2 }}>
+            <Text style={{ fontSize: 11, color: '#656575' }}>Waktu pengamatan</Text>
+            <Text style={{ fontSize: 13, fontWeight: '600', color: '#11121A' }}>
+              {formatTimeWithZone(report.observationTime, report.timezone)}
+            </Text>
+          </View>
+          <View style={{ gap: 2 }}>
+            <Text style={{ fontSize: 11, color: '#656575' }}>Lokasi kejadian</Text>
+            <Text style={{ fontSize: 13, fontWeight: '600', color: '#11121A' }}>
+              {report.incidentLocationText?.trim() || 'Belum diisi'}
+            </Text>
+          </View>
+          <View style={{ gap: 2 }}>
+            <Text style={{ fontSize: 11, color: '#656575' }}>Posisi pelapor</Text>
+            <Text style={{ fontSize: 13, fontWeight: '600', color: '#11121A' }}>
+              {report.includeObserverLocation && report.observerLocation
+                ? `Terisi (Lat ${report.observerLocation.latitude.toFixed(5)}, Lon ${report.observerLocation.longitude.toFixed(5)})`
+                : 'Tidak disertakan'}
+            </Text>
+          </View>
+        </View>
 
+        {/* SENDER SELFIE CARD (WHITE) */}
+        <View
+          style={[
+            {
+              backgroundColor: '#FFFFFF',
+              borderRadius: 24,
+              padding: 18,
+              marginBottom: space.lg,
+              gap: 10,
+            },
+            t.cardShadow,
+          ]}
+        >
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Text style={{ fontSize: 16, fontWeight: '700', color: '#11121A' }}>
+              Foto Pengirim (Selfie)
+            </Text>
+            <StatusPill
+              label={selfie ? 'Tersedia' : 'Belum diisi'}
+              kind={selfie ? 'positive' : 'warn'}
+            />
+          </View>
+
+          {selfie ? (
+            <View style={{ flexDirection: 'row', gap: 12, alignItems: 'center' }}>
+              <Image
+                source={{ uri: selfie.uri }}
+                style={{ width: 60, height: 60, borderRadius: 12, backgroundColor: '#E0E0E0' }}
+                resizeMode="cover"
+              />
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontSize: 12, fontWeight: '600', color: '#11121A' }}>
+                  Foto pengirim · identitas belum diverifikasi
+                </Text>
+                <Text style={{ fontSize: 11, color: '#656575', marginTop: 2 }}>
+                  Tersimpan di perangkat lokal
+                </Text>
+              </View>
+            </View>
+          ) : (
+            <Text style={{ fontSize: 12, color: '#656575' }}>
+              Swafoto belum diambil. Wajib diambil sebelum laporan dibagikan.
+            </Text>
+          )}
+        </View>
+
+        {/* FOTO KEJADIAN CARD (WHITE) */}
         {report.attachments.length > 0 ? (
-          <>
-            <View style={{ height: space.md }} />
-            <Label>Lampiran</Label>
-            <Row style={{ marginTop: space.xs, flexWrap: 'wrap' }}>
+          <View
+            style={[
+              {
+                backgroundColor: '#FFFFFF',
+                borderRadius: 24,
+                padding: 18,
+                marginBottom: space.lg,
+                gap: 10,
+              },
+              t.cardShadow,
+            ]}
+          >
+            <Text style={{ fontSize: 16, fontWeight: '700', color: '#11121A' }}>
+              Foto Kejadian ({report.attachments.length})
+            </Text>
+            <View style={{ flexDirection: 'row', gap: 10, flexWrap: 'wrap' }}>
               {report.attachments.map((a, i) => (
-                <Image key={a.id} source={{ uri: a.uri }} accessibilityLabel={`Lampiran foto ${i + 1}`}
-                  style={{ width: 72, height: 72, borderRadius: radius.input, backgroundColor: t.border }} />
+                <View key={a.id} style={{ alignItems: 'center', gap: 4 }}>
+                  <Image
+                    source={{ uri: a.uri }}
+                    accessibilityLabel={`Foto kejadian ${i + 1}`}
+                    style={{ width: 72, height: 72, borderRadius: 12, backgroundColor: '#E0E0E0' }}
+                    resizeMode="cover"
+                  />
+                  <Text style={{ fontSize: 10, color: '#656575' }}>
+                    {a.selectedForShare ? 'Dipilih' : 'Tidak'}
+                  </Text>
+                </View>
               ))}
-            </Row>
-          </>
+            </View>
+          </View>
         ) : null}
 
-        <Divider />
-        <Label>Aktivitas berbagi</Label>
-        {report.shareAttempts.length === 0 ? (
-          <Caption style={{ marginTop: space.xs }}>Laporan belum dibagikan dari aplikasi ini.</Caption>
-        ) : (
-          report.shareAttempts.map((s) => (
-            <Card key={s.id} style={{ marginTop: space.sm }}>
-              <Body>{shareEventLabel(s.event)} pada {formatShortDate(s.at)}</Body>
-              <Caption style={{ marginTop: space.xs }}>Penerimaan belum diketahui.</Caption>
-            </Card>
-          ))
-        )}
+        {/* AKTIVITAS BERBAGI (WHITE) */}
+        <View
+          style={[
+            {
+              backgroundColor: '#FFFFFF',
+              borderRadius: 24,
+              padding: 18,
+              marginBottom: space.xl,
+              gap: 10,
+            },
+            t.cardShadow,
+          ]}
+        >
+          <Text style={{ fontSize: 16, fontWeight: '700', color: '#11121A' }}>
+            Aktivitas berbagi
+          </Text>
+          {report.shareAttempts.length === 0 ? (
+            <Text style={{ fontSize: 12, color: '#656575' }}>
+              Laporan belum pernah dibagikan dari aplikasi ini.
+            </Text>
+          ) : (
+            report.shareAttempts.map((s) => (
+              <View
+                key={s.id}
+                style={{
+                  backgroundColor: '#F8F9FA',
+                  borderRadius: 14,
+                  padding: 12,
+                  gap: 4,
+                }}
+              >
+                {/* HONEST LABEL: Upaya berbagi dibatalkan / Pilihan berbagi dibuka */}
+                <Text style={{ fontSize: 13, fontWeight: '700', color: '#11121A' }}>
+                  {shareEventLabel(s.event)} · {formatShortDate(s.at)}
+                </Text>
+                <Text style={{ fontSize: 11, color: '#656575' }}>
+                  Penerimaan belum diketahui (tidak ada bukti tanda terima otomatis).
+                </Text>
+              </View>
+            ))
+          )}
+        </View>
 
-        <Divider />
-        <Button title="Bagikan lagi" onPress={() => router.push(`/report/${id}/share`)} />
-        <View style={{ height: space.sm }} />
-        <Button title="Hapus draf" variant="destructive" onPress={del} accessibilityHint="Menghapus draf dan salinan fotonya dari Niragni" />
+        {/* ACTION BUTTONS */}
+        <Pressable
+          onPress={() => router.push(`/report/${id}/share`)}
+          accessibilityRole="button"
+          accessibilityLabel="Buka pilihan berbagi"
+          style={({ pressed }) => [
+            {
+              backgroundColor: '#11121A',
+              height: 50,
+              borderRadius: 25,
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginBottom: space.sm,
+              opacity: pressed ? 0.88 : 1,
+            },
+            t.cardShadow,
+          ]}
+        >
+          <Text style={{ color: '#FFFFFF', fontSize: 14, fontWeight: '700' }}>
+            Buka pilihan berbagi
+          </Text>
+        </Pressable>
+
+        <Pressable
+          onPress={del}
+          accessibilityRole="button"
+          accessibilityLabel="Hapus draf laporan"
+          style={({ pressed }) => ({
+            paddingVertical: 12,
+            alignItems: 'center',
+            justifyContent: 'center',
+            opacity: pressed ? 0.7 : 1,
+          })}
+        >
+          <Text style={{ color: '#991B1B', fontSize: 13, fontWeight: '600' }}>
+            Hapus draf
+          </Text>
+        </Pressable>
       </ScrollView>
     </Screen>
   );

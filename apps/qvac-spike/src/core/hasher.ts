@@ -77,21 +77,3 @@ export async function computeFileSha256(
   }
 }
 
-/**
- * Computes SHA-256 directly from an in-memory Uint8Array or string buffer.
- */
-export function computeBytesSha256(data: Uint8Array | string): string {
-  const hasher = sha256.create();
-  if (typeof data === 'string') {
-    const encoder = new TextEncoder();
-    hasher.update(encoder.encode(data));
-  } else {
-    hasher.update(data);
-  }
-  const digest = hasher.digest();
-  let hex = '';
-  for (let i = 0; i < digest.length; i++) {
-    hex += digest[i].toString(16).padStart(2, '0');
-  }
-  return hex;
-}

@@ -1,0 +1,12 @@
+{
+  "apk": "artifacts\\niragni-android-bugfix-2026-10-30.apk",
+  "bytes": 86372778,
+  "sha256": "C3A106BCC4C43E59A094FA9A816A5A1582D33D45A6B11E56E4B994A2CBA6E698",
+  "abis": [
+    "arm64-v8a"
+  ],
+  "nativeLibraries": 60,
+  "allNativeLibrariesDeflated": true,
+  "jsBundleDeflated": true,
+  "bundledModels": []
+}

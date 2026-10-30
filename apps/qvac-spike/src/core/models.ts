@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Local AI model management for Bara.
  * Enforces:
  * - Shared lifecycle exclusion across public check/download/import/delete/generate
@@ -26,6 +26,7 @@ import { computeFileSha256 } from './hasher';
 import { getDatabase, withWriteLock } from './database';
 import { QvacNativeWorker } from '../worker';
 import { LifecycleCoordinator, sharedLifecycle } from './lifecycle';
+import { copySourceToPrivate } from './safCopy';
 
 interface ModelStateRow {
   candidateId: string;
@@ -39,6 +40,14 @@ interface ModelStateRow {
   modelPath: string | null;
   projectorPath: string | null;
   updatedAt: string;
+  // Persisted SHA-256-verified pair fingerprint (schema v3). Null until a
+  // checkModel/downloadModel/importModel pass has verified the hash at least
+  // once; cleared whenever the state is re-saved without one (e.g. 'missing',
+  // 'failed'), so a stale/corrupt pair is never trusted as pre-verified.
+  verifiedModelSize: number | null;
+  verifiedModelModTime: number | null;
+  verifiedProjectorSize: number | null;
+  verifiedProjectorModTime: number | null;
 }
 
 export interface FileFingerprint {
@@ -66,6 +75,7 @@ const UPSTREAM_URLS: Record<string, { model: string; projector: string }> = {
 };
 
 export class ModelManager {
+  private activeStates = new Map<string, ModelState>();
   private activeDownloadTask: DownloadResumable | null = null;
   private activeAbortController: AbortController | null = null;
   private isDownloadCancelled: boolean = false;
@@ -121,6 +131,14 @@ export class ModelManager {
       const requiredBytes =
         candidate.modelFile.expectedBytes + candidate.projectorFile.expectedBytes;
       const cached = rowMap.get(candidate.id);
+      const active = this.activeStates.get(candidate.id);
+      if (active) { states.push(active); continue; }
+      if (this.hasCompleteStaging(candidate)) {
+        states.push({ candidateId: candidate.id, name: candidate.name, status: 'installed',
+          downloadedBytes: requiredBytes, totalBytes: requiredBytes, requiredBytes,
+          error: 'Unduhan lengkap tersimpan. Lanjutkan cek lokal tanpa mengunduh ulang.' });
+        continue;
+      }
 
       const modelPath = this.getModelFilePath(candidate);
       const projectorPath = this.getProjectorFilePath(candidate);
@@ -166,6 +184,23 @@ export class ModelManager {
           modelPath,
           projectorPath
         });
+      } else if (cached && (cached.status === 'failed' || cached.status === 'incompatible')) {
+        // Bug fix (P3): files with correct size but a recorded failure (e.g. hash
+        // mismatch, load failure) must surface the failure status and error
+        // message — not silently upgrade to 'installed' on the next listModels call.
+        // This regression is tested in src/__tests__/model-list-status.test.ts.
+        states.push({
+          candidateId: candidate.id,
+          name: candidate.name,
+          status: cached.status as ModelState['status'],
+          downloadedBytes: modelFile.size + projectorFile.size,
+          totalBytes: requiredBytes,
+          requiredBytes,
+          error: cached.error ?? undefined,
+          lastLocalCheck: cached.lastLocalCheck ?? undefined,
+          modelPath,
+          projectorPath
+        });
       } else {
         // Files exist with correct size but integrity not yet verified in DB
         states.push({
@@ -191,6 +226,8 @@ export class ModelManager {
    * performs real local test load into memory, and records lastLocalCheck.
    */
   public async checkModel(candidateId: string): Promise<ModelState> {
+    const candidate = this.getModelCandidate(candidateId);
+    if (this.hasCompleteStaging(candidate)) return this.downloadModel(candidateId, () => {});
     const token = this.lifecycle.acquire('checking');
     try {
       return await this.internalCheckModel(candidateId, { explicitHash: true });
@@ -233,7 +270,7 @@ export class ModelManager {
         totalBytes: requiredBytes,
         requiredBytes
       };
-      await this.saveModelState(state);
+      await this.saveModelState(state, null);
       return state;
     }
 
@@ -252,7 +289,7 @@ export class ModelManager {
         requiredBytes,
         error: 'Ukuran berkas model tidak sesuai dengan manifest audit.'
       };
-      await this.saveModelState(state);
+      await this.saveModelState(state, null);
       return state;
     }
 
@@ -278,11 +315,12 @@ export class ModelManager {
           requiredBytes,
           error: 'SHA-256 checksum tidak cocok dengan hash terpin di manifest.'
         };
-        await this.saveModelState(state);
+        await this.saveModelState(state, null);
         return state;
       }
     }
 
+    if (options.signal?.aborted) throw new Error('Pemeriksaan model dibatalkan.');
     // 4. Honest local load check: Status ready requires real local instantiation
     let isReady = false;
     let lastCheck: string | undefined;
@@ -290,9 +328,11 @@ export class ModelManager {
     try {
       await this.worker.loadModel(candidate, modelPath, projectorPath);
       await this.worker.unloadModel();
+      if (options.signal?.aborted) throw new Error('Pemeriksaan model dibatalkan.');
       isReady = true;
       lastCheck = new Date().toISOString();
     } catch (err: unknown) {
+      if (options.signal?.aborted) throw err;
       const errMsg = err instanceof Error ? err.message : String(err);
       this.verifiedFingerprints.delete(candidateId);
       const state: ModelState = {
@@ -306,7 +346,7 @@ export class ModelManager {
         projectorPath,
         error: `Gagal memuat model ke memori runtime: ${errMsg}`
       };
-      await this.saveModelState(state);
+      await this.saveModelState(state, null);
       return state;
     }
 
@@ -337,7 +377,7 @@ export class ModelManager {
       modelPath,
       projectorPath
     };
-    await this.saveModelState(state);
+    await this.saveModelState(state, currentFingerprint);
     return state;
   }
 
@@ -405,8 +445,21 @@ export class ModelManager {
       }
     };
 
-    // Verify SHA-256 on first use per process or if modificationTime/size/URI changed on disk
-    const previousVerified = this.verifiedFingerprints.get(candidateId);
+    // Verify SHA-256 on first use per process or if modificationTime/size/URI changed on disk.
+    // The in-memory cache is always empty right after an app restart, which previously forced
+    // a full re-hash of both files (hundreds of MB) on every single restart even when nothing
+    // had changed. Before paying that cost, fall back to the fingerprint persisted in the DB
+    // (schema v3 columns) by the last successful checkModel/downloadModel pass or by a prior
+    // call to this same method — if it matches the current on-disk size+modificationTime, the
+    // pair is already known-good and the hash is skipped.
+    let previousVerified = this.verifiedFingerprints.get(candidateId);
+    if (!previousVerified) {
+      const dbFingerprint = this.fingerprintFromRow(row, candidateId, modelFile.uri, projectorFile.uri);
+      if (dbFingerprint && this.isFingerprintEqual(dbFingerprint, currentFingerprint)) {
+        previousVerified = dbFingerprint;
+      }
+    }
+
     if (!previousVerified || !this.isFingerprintEqual(previousVerified, currentFingerprint)) {
       const modelHash = await computeFileSha256(modelPath);
       const projHash = await computeFileSha256(projectorPath);
@@ -421,6 +474,12 @@ export class ModelManager {
         );
       }
 
+      this.verifiedFingerprints.set(candidateId, currentFingerprint);
+      // Persist so a future process restart can skip re-hashing this exact verified pair too.
+      await this.persistVerifiedFingerprint(candidateId, currentFingerprint);
+    } else {
+      // DB- or memory-verified fingerprint matches; seed the in-memory cache so subsequent
+      // calls this process skip both the hash and the DB-fingerprint comparison.
       this.verifiedFingerprints.set(candidateId, currentFingerprint);
     }
 
@@ -475,6 +534,10 @@ export class ModelManager {
     this.isDownloadCancelled = false;
     this.activeAbortController = new AbortController();
 
+    const publish = (state: ModelState) => {
+      this.activeStates.set(candidateId, state);
+      onProgress(state);
+    };
     let modelPath = '';
     let projectorPath = '';
     let modelPartialPath = '';
@@ -499,8 +562,16 @@ export class ModelManager {
       modelPartialPath = `${modelPath}.partial`;
       projPartialPath = `${projectorPath}.partial`;
 
-      // Check disk space (required + 25% safety margin)
-      const requiredWithMargin = Math.ceil(requiredBytes * 1.25);
+      const complete = (path: string, size: number) => {
+        const file = new File(path);
+        return file.exists && file.size === size;
+      };
+      const haveModel = complete(modelPartialPath, candidate.modelFile.expectedBytes);
+      const haveProjector = complete(projPartialPath, candidate.projectorFile.expectedBytes);
+      // Completed staging only needs verification; reserve space for missing transfers.
+      const remainingBytes = (haveModel ? 0 : candidate.modelFile.expectedBytes) +
+        (haveProjector ? 0 : candidate.projectorFile.expectedBytes);
+      const requiredWithMargin = Math.ceil(remainingBytes * 1.25);
       const freeSpace = Paths.availableDiskSpace;
       if (freeSpace < requiredWithMargin) {
         const neededMb = (requiredWithMargin / (1024 * 1024)).toFixed(0);
@@ -514,8 +585,8 @@ export class ModelManager {
           requiredBytes,
           error: `Ruang penyimpanan tidak mencukupi. Butuh minimal ${neededMb} MB, tersedia ${freeMb} MB.`
         };
-        await this.saveModelState(state);
-        onProgress(state);
+        await this.saveModelState(state, null);
+        publish(state);
         return state;
       }
 
@@ -530,8 +601,8 @@ export class ModelManager {
       }
 
       // Interrupted download clean retry: clean any leftover partials so no corrupted bytes remain
-      this.cleanFileIfExists(modelPartialPath);
-      this.cleanFileIfExists(projPartialPath);
+      if (!haveModel) this.cleanFileIfExists(modelPartialPath);
+      if (!haveProjector) this.cleanFileIfExists(projPartialPath);
 
       let state: ModelState = {
         candidateId,
@@ -541,57 +612,63 @@ export class ModelManager {
         totalBytes: requiredBytes,
         requiredBytes
       };
-      onProgress(state);
+      publish(state);
 
-      let downloadedModelBytes = 0;
-      let downloadedProjBytes = 0;
+      let downloadedModelBytes = haveModel ? candidate.modelFile.expectedBytes : 0;
+      let downloadedProjBytes = haveProjector ? candidate.projectorFile.expectedBytes : 0;
 
       // 1. Download model file with cancellable DownloadResumable
       checkCancelled();
-      this.activeDownloadTask = createDownloadResumable(
-        urls.model,
-        modelPartialPath,
-        {},
-        (data) => {
-          downloadedModelBytes = data.totalBytesWritten;
-          state = {
-            ...state,
-            downloadedBytes: downloadedModelBytes + downloadedProjBytes
-          };
-          onProgress(state);
+      if (!haveModel) {
+        this.activeDownloadTask = createDownloadResumable(
+          urls.model,
+          modelPartialPath,
+          {},
+          (data) => {
+            downloadedModelBytes = data.totalBytesWritten;
+            state = {
+              ...state,
+              downloadedBytes: downloadedModelBytes + downloadedProjBytes
+            };
+            publish(state);
+          }
+        );
+
+        const modelDownloadResult = await this.activeDownloadTask.downloadAsync();
+        this.activeDownloadTask = null;
+        checkCancelled();
+
+        if (!modelDownloadResult || modelDownloadResult.status !== 200) {
+          throw new Error(`Unduhan berkas model gagal (HTTP ${modelDownloadResult?.status ?? 'error'})`);
         }
-      );
 
-      const modelDownloadResult = await this.activeDownloadTask.downloadAsync();
-      this.activeDownloadTask = null;
-      checkCancelled();
-
-      if (!modelDownloadResult || modelDownloadResult.status !== 200) {
-        throw new Error(`Unduhan berkas model gagal (HTTP ${modelDownloadResult?.status ?? 'error'})`);
       }
 
       // 2. Download projector file with cancellable DownloadResumable
       checkCancelled();
-      this.activeDownloadTask = createDownloadResumable(
-        urls.projector,
-        projPartialPath,
-        {},
-        (data) => {
-          downloadedProjBytes = data.totalBytesWritten;
-          state = {
-            ...state,
-            downloadedBytes: downloadedModelBytes + downloadedProjBytes
-          };
-          onProgress(state);
+      if (!haveProjector) {
+        this.activeDownloadTask = createDownloadResumable(
+          urls.projector,
+          projPartialPath,
+          {},
+          (data) => {
+            downloadedProjBytes = data.totalBytesWritten;
+            state = {
+              ...state,
+              downloadedBytes: downloadedModelBytes + downloadedProjBytes
+            };
+            publish(state);
+          }
+        );
+
+        const projDownloadResult = await this.activeDownloadTask.downloadAsync();
+        this.activeDownloadTask = null;
+        checkCancelled();
+
+        if (!projDownloadResult || projDownloadResult.status !== 200) {
+          throw new Error(`Unduhan berkas projector gagal (HTTP ${projDownloadResult?.status ?? 'error'})`);
         }
-      );
 
-      const projDownloadResult = await this.activeDownloadTask.downloadAsync();
-      this.activeDownloadTask = null;
-      checkCancelled();
-
-      if (!projDownloadResult || projDownloadResult.status !== 200) {
-        throw new Error(`Unduhan berkas projector gagal (HTTP ${projDownloadResult?.status ?? 'error'})`);
       }
 
       // 3. Transition to verifying status
@@ -600,17 +677,27 @@ export class ModelManager {
         status: 'verifying',
         downloadedBytes: requiredBytes
       };
-      onProgress(state);
+      publish(state);
 
-      // 4. Verify SHA-256 of staged files with AbortSignal passed to all hashes
+      // 4. Bounded progress updates distinguish checksum work from network transfer.
+      let lastHashUpdate = 0;
+      const hashProgress = (offset: number) => (bytes: number, total: number) => {
+        const now = Date.now();
+        if (bytes === total || now - lastHashUpdate >= 250) {
+          lastHashUpdate = now;
+          state = { ...state, verifiedBytes: offset + bytes };
+          publish(state);
+        }
+      };
       checkCancelled();
       const modelHash = await computeFileSha256(modelPartialPath, {
-        signal: this.activeAbortController?.signal
+        signal: this.activeAbortController?.signal,
+        onProgress: hashProgress(0),
       });
       checkCancelled();
-
       const projHash = await computeFileSha256(projPartialPath, {
-        signal: this.activeAbortController?.signal
+        signal: this.activeAbortController?.signal,
+        onProgress: hashProgress(candidate.modelFile.expectedBytes),
       });
       checkCancelled();
 
@@ -630,8 +717,8 @@ export class ModelManager {
           requiredBytes,
           error: 'SHA-256 berkas terunduh tidak cocok dengan manifest.'
         };
-        await this.saveModelState(failState);
-        onProgress(failState);
+        await this.saveModelState(failState, null);
+        publish(failState);
         return failState;
       }
 
@@ -646,8 +733,9 @@ export class ModelManager {
       }
 
       // 6. Perform internal check for local load readiness
-      const verifiedState = await this.internalCheckModel(candidateId, { explicitHash: false });
-      onProgress(verifiedState);
+      const verifiedState = await this.internalCheckModel(candidateId, { explicitHash: false, signal: this.activeAbortController?.signal });
+      checkCancelled();
+      publish(verifiedState);
       return verifiedState;
     } catch (err: unknown) {
       const errMsg = err instanceof Error ? err.message : String(err);
@@ -657,8 +745,17 @@ export class ModelManager {
         this.isDownloadCancelled ||
         this.activeAbortController?.signal.aborted;
 
-      if (modelPartialPath) this.cleanFileIfExists(modelPartialPath);
-      if (projPartialPath) this.cleanFileIfExists(projPartialPath);
+      // Keep full staged files on interruption; never treat size as integrity proof.
+      const candidate = CANDIDATES.find(c => c.id === candidateId);
+      if (!candidate) throw err;
+      const staged = this.hasCompleteStaging(candidate);
+      for (const [path, expected] of [[modelPartialPath, candidate.modelFile.expectedBytes],
+        [projPartialPath, candidate.projectorFile.expectedBytes]] as const) {
+        if (path) {
+          const file = new File(path);
+          if (file.exists && file.size !== expected) this.cleanFileIfExists(path);
+        }
+      }
 
       // If a prior valid pair exists and download was cancelled/failed, preserve prior state
       let priorValid = false;
@@ -675,20 +772,21 @@ export class ModelManager {
       const failedState: ModelState = {
         candidateId,
         name: candidateName,
-        status: isCancelled ? (priorValid ? 'ready' : 'missing') : 'failed',
-        downloadedBytes: priorValid ? requiredBytes : 0,
+        status: isCancelled ? (priorValid || staged ? 'installed' : 'missing') : 'failed',
+        downloadedBytes: priorValid || staged ? requiredBytes : 0,
         totalBytes: requiredBytes,
         requiredBytes,
         error: isCancelled
           ? 'Unduhan dibatalkan oleh pengguna.'
           : `Unduhan gagal: ${errMsg}`
       };
-      await this.saveModelState(failedState);
-      onProgress(failedState);
+      await this.saveModelState(failedState, null);
+      publish(failedState);
       return failedState;
     } finally {
       this.activeDownloadTask = null;
       this.activeAbortController = null;
+      this.activeStates.delete(candidateId);
       this.lifecycle.release('downloading', token);
     }
   }
@@ -720,6 +818,10 @@ export class ModelManager {
     onProgress: (state: ModelState) => void
   ): Promise<ModelState> {
     const token = this.lifecycle.acquire('importing');
+    const publish = (state: ModelState) => {
+      this.activeStates.set(candidateId, state);
+      onProgress(state);
+    };
     this.activeAbortController = new AbortController();
 
     let modelPartialPath = '';
@@ -779,31 +881,46 @@ export class ModelManager {
         totalBytes: requiredBytes,
         requiredBytes
       };
-      onProgress(state);
+      publish(state);
 
       this.cleanFileIfExists(modelPartialPath);
       this.cleanFileIfExists(projPartialPath);
 
-      const pickedModelFile = new File(modelPick.assets[0].uri);
-      const pickedProjFile = new File(projPick.assets[0].uri);
+      const pickedModelUri = modelPick.assets[0].uri;
+      const pickedProjUri = projPick.assets[0].uri;
 
-      // Copy to staged partials
-      pickedModelFile.copy(new File(modelPartialPath));
-      pickedProjFile.copy(new File(projPartialPath));
+      // Bug 1 fix: Use copySourceToPrivate which routes content:// (SAF) URIs
+      // through the legacy FileSystem.copyAsync — File.copy() rejects content:// URIs
+      // in expo-file-system v19 (throws 'This method cannot be used with content URIs').
+      await copySourceToPrivate(pickedModelUri, modelPartialPath);
+      await copySourceToPrivate(pickedProjUri, projPartialPath);
 
       state = {
         ...state,
         downloadedBytes: requiredBytes,
         status: 'verifying'
       };
-      onProgress(state);
+      publish(state);
+
+      // Bounded progress updates for SHA-256 checksum during import
+      let lastHashUpdate = 0;
+      const hashProgress = (offset: number) => (bytes: number, total: number) => {
+        const now = Date.now();
+        if (bytes === total || now - lastHashUpdate >= 250) {
+          lastHashUpdate = now;
+          state = { ...state, verifiedBytes: offset + bytes };
+          publish(state);
+        }
+      };
 
       // Verify SHA256 of staged files with AbortSignal passed
       const modelHash = await computeFileSha256(modelPartialPath, {
-        signal: this.activeAbortController?.signal
+        signal: this.activeAbortController?.signal,
+        onProgress: hashProgress(0),
       });
       const projHash = await computeFileSha256(projPartialPath, {
-        signal: this.activeAbortController?.signal
+        signal: this.activeAbortController?.signal,
+        onProgress: hashProgress(candidate.modelFile.expectedBytes),
       });
 
       if (
@@ -815,6 +932,7 @@ export class ModelManager {
         throw new Error('SHA-256 berkas yang diimpor tidak sesuai dengan manifest audit.');
       }
 
+      if (this.activeAbortController?.signal.aborted) throw new Error('Impor dibatalkan oleh pengguna.');
       // Atomic pair promotion preserving prior valid files
       await this.atomicPairPromotion(modelPartialPath, projPartialPath, modelPath, projectorPath);
 
@@ -823,11 +941,60 @@ export class ModelManager {
         this.loadedPairFingerprint = null;
       }
 
-      const verifiedState = await this.internalCheckModel(candidateId, { explicitHash: false });
-      onProgress(verifiedState);
+      const verifiedState = await this.internalCheckModel(candidateId, { explicitHash: false, signal: this.activeAbortController?.signal });
+      publish(verifiedState);
       return verifiedState;
+    } catch (err: unknown) {
+      // Bug 2 fix: Failed or cancelled import must publish a terminal state so
+      // the UI does not stay stuck at 'downloading 0%'. If a prior valid pair
+      // exists on disk we report it honestly; otherwise we report 'missing'.
+      const errMsg = err instanceof Error ? err.message : String(err);
+      const isCancelled =
+        errMsg.toLowerCase().includes('batal') ||
+        errMsg.toLowerCase().includes('cancel');
+
+      // Cleanup partial staged files on any error
+      if (modelPartialPath) this.cleanFileIfExists(modelPartialPath);
+      if (projPartialPath) this.cleanFileIfExists(projPartialPath);
+
+      // Check whether a prior valid pair exists at the destination paths
+      let priorValid = false;
+      let requiredBytes = 0;
+      let candidateName = candidateId;
+      try {
+        const candidate = this.getModelCandidate(candidateId);
+        candidateName = candidate.name;
+        requiredBytes = candidate.modelFile.expectedBytes + candidate.projectorFile.expectedBytes;
+        const modelPath = this.getModelFilePath(candidate);
+        const projectorPath = this.getProjectorFilePath(candidate);
+        const modelFile = new File(modelPath);
+        const projFile = new File(projectorPath);
+        priorValid =
+          modelFile.exists &&
+          projFile.exists &&
+          modelFile.size === candidate.modelFile.expectedBytes &&
+          projFile.size === candidate.projectorFile.expectedBytes;
+      } catch {
+        // candidate lookup failed; leave priorValid = false
+      }
+
+      const terminalState: ModelState = {
+        candidateId,
+        name: candidateName,
+        status: isCancelled ? (priorValid ? 'installed' : 'missing') : 'failed',
+        downloadedBytes: priorValid ? requiredBytes : 0,
+        totalBytes: requiredBytes,
+        requiredBytes,
+        error: isCancelled
+          ? (priorValid ? undefined : 'Impor dibatalkan oleh pengguna.')
+          : `Impor gagal: ${errMsg}`
+      };
+      await this.saveModelState(terminalState, null);
+      publish(terminalState);
+      throw err;
     } finally {
       this.activeAbortController = null;
+      this.activeStates.delete(candidateId);
       this.lifecycle.release('importing', token);
     }
   }
@@ -864,7 +1031,7 @@ export class ModelManager {
         requiredBytes
       };
 
-      await this.saveModelState(state);
+      await this.saveModelState(state, null);
     } finally {
       this.lifecycle.release('deleting', token);
     }
@@ -881,43 +1048,42 @@ export class ModelManager {
     modelDestPath: string,
     projDestPath: string
   ): Promise<void> {
-    const modelDest = new File(modelDestPath);
-    const projDest = new File(projDestPath);
-    const modelStaged = new File(modelStagedPath);
-    const projStaged = new File(projStagedPath);
-
-    const modelBackup = new File(`${modelDestPath}.backup`);
-    const projBackup = new File(`${projDestPath}.backup`);
-
-    this.cleanFileIfExists(modelBackup.uri);
-    this.cleanFileIfExists(projBackup.uri);
-
-    let backedUp = false;
-    if (modelDest.exists && projDest.exists) {
-      modelDest.move(modelBackup);
-      projDest.move(projBackup);
-      backedUp = true;
-    }
-
+    const modelBackupPath = `${modelDestPath}.backup`;
+    const projBackupPath = `${projDestPath}.backup`;
+    let modelBackedUp = false;
+    let projBackedUp = false;
+    let modelPromoted = false;
+    let projPromoted = false;
+    // File.move mutates the source File.uri. Always reconstruct from fixed paths.
     try {
-      modelStaged.move(modelDest);
-      projStaged.move(projDest);
-
-      // Promotion succeeded; clean backups
-      if (backedUp) {
-        this.cleanFileIfExists(modelBackup.uri);
-        this.cleanFileIfExists(projBackup.uri);
+      if (new File(modelDestPath).exists) {
+        new File(modelDestPath).move(new File(modelBackupPath));
+        modelBackedUp = true;
       }
+      if (new File(projDestPath).exists) {
+        new File(projDestPath).move(new File(projBackupPath));
+        projBackedUp = true;
+      }
+      new File(modelStagedPath).move(new File(modelDestPath));
+      modelPromoted = true;
+      new File(projStagedPath).move(new File(projDestPath));
+      projPromoted = true;
     } catch (err) {
-      // Promotion failed midway; rollback and restore prior valid files
-      if (backedUp) {
-        this.cleanFileIfExists(modelDest.uri);
-        this.cleanFileIfExists(projDest.uri);
-        if (modelBackup.exists) modelBackup.move(modelDest);
-        if (projBackup.exists) projBackup.move(projDest);
-      }
+      if (modelPromoted) new File(modelDestPath).move(new File(modelStagedPath));
+      if (projPromoted) new File(projDestPath).move(new File(projStagedPath));
+      if (modelBackedUp) new File(modelBackupPath).move(new File(modelDestPath));
+      if (projBackedUp) new File(projBackupPath).move(new File(projDestPath));
       throw err;
     }
+    if (modelBackedUp) this.cleanFileIfExists(modelBackupPath);
+    if (projBackedUp) this.cleanFileIfExists(projBackupPath);
+  }
+
+  private hasCompleteStaging(candidate: ModelCandidate): boolean {
+    const model = new File(`${this.getModelFilePath(candidate)}.partial`);
+    const projector = new File(`${this.getProjectorFilePath(candidate)}.partial`);
+    return model.exists && projector.exists && model.size === candidate.modelFile.expectedBytes &&
+      projector.size === candidate.projectorFile.expectedBytes;
   }
 
   private isFingerprintEqual(a: PairFingerprint, b: PairFingerprint): boolean {
@@ -939,13 +1105,21 @@ export class ModelManager {
     } catch {}
   }
 
-  private async saveModelState(state: ModelState): Promise<void> {
+  /**
+   * Persists a model's state row. `fingerprint` must be explicitly passed: a verified
+   * PairFingerprint on a successful ready/installed save, or `null` on every other save
+   * (missing/failed/incompatible/deleted/cancelled) so a stale or unverified pair is never
+   * trusted as pre-verified after a restart. See `ensureInstalled()` for how the persisted
+   * fingerprint is consulted to skip redundant re-hashing.
+   */
+  private async saveModelState(state: ModelState, fingerprint: PairFingerprint | null): Promise<void> {
     await withWriteLock(async (db) => {
       await db.runAsync(
         `INSERT INTO model_states (
           candidateId, name, status, downloadedBytes, totalBytes, requiredBytes,
-          error, lastLocalCheck, modelPath, projectorPath, updatedAt
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+          error, lastLocalCheck, modelPath, projectorPath, updatedAt,
+          verifiedModelSize, verifiedModelModTime, verifiedProjectorSize, verifiedProjectorModTime
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ON CONFLICT(candidateId) DO UPDATE SET
           name = excluded.name,
           status = excluded.status,
@@ -956,7 +1130,11 @@ export class ModelManager {
           lastLocalCheck = excluded.lastLocalCheck,
           modelPath = excluded.modelPath,
           projectorPath = excluded.projectorPath,
-          updatedAt = excluded.updatedAt`,
+          updatedAt = excluded.updatedAt,
+          verifiedModelSize = excluded.verifiedModelSize,
+          verifiedModelModTime = excluded.verifiedModelModTime,
+          verifiedProjectorSize = excluded.verifiedProjectorSize,
+          verifiedProjectorModTime = excluded.verifiedProjectorModTime`,
         [
           state.candidateId,
           state.name,
@@ -968,7 +1146,76 @@ export class ModelManager {
           state.lastLocalCheck ?? null,
           state.modelPath ?? null,
           state.projectorPath ?? null,
-          new Date().toISOString()
+          new Date().toISOString(),
+          fingerprint?.model.size ?? null,
+          fingerprint?.model.modificationTime ?? null,
+          fingerprint?.projector.size ?? null,
+          fingerprint?.projector.modificationTime ?? null
+        ]
+      );
+    });
+  }
+
+  /**
+   * Builds a PairFingerprint from a DB row's persisted verified-fingerprint columns
+   * (schema v3), or null if the row has never had one saved (columns are NULL together).
+   * Used by ensureInstalled() to compare against the current on-disk fingerprint without
+   * re-hashing, when the in-memory cache is empty (e.g. right after an app restart).
+   */
+  private fingerprintFromRow(
+    row: ModelStateRow,
+    candidateId: string,
+    modelUri: string,
+    projectorUri: string
+  ): PairFingerprint | null {
+    if (
+      row.verifiedModelSize == null ||
+      row.verifiedModelModTime == null ||
+      row.verifiedProjectorSize == null ||
+      row.verifiedProjectorModTime == null
+    ) {
+      return null;
+    }
+    return {
+      candidateId,
+      model: {
+        uri: modelUri,
+        size: row.verifiedModelSize,
+        modificationTime: row.verifiedModelModTime
+      },
+      projector: {
+        uri: projectorUri,
+        size: row.verifiedProjectorSize,
+        modificationTime: row.verifiedProjectorModTime
+      }
+    };
+  }
+
+  /**
+   * Lightweight update of only the persisted fingerprint columns on an existing row.
+   * Used by ensureInstalled() when it performs a fresh hash verification outside the
+   * checkModel/downloadModel flow, so a later process restart can also skip re-hashing
+   * this exact pair. Never touches status/error/etc — those are only written by
+   * saveModelState, and this never inserts a row (ensureInstalled() only reaches this
+   * point when a row already exists with status 'ready' or 'installed').
+   */
+  private async persistVerifiedFingerprint(candidateId: string, fingerprint: PairFingerprint): Promise<void> {
+    await withWriteLock(async (db) => {
+      await db.runAsync(
+        `UPDATE model_states SET
+          verifiedModelSize = ?,
+          verifiedModelModTime = ?,
+          verifiedProjectorSize = ?,
+          verifiedProjectorModTime = ?,
+          updatedAt = ?
+        WHERE candidateId = ?`,
+        [
+          fingerprint.model.size,
+          fingerprint.model.modificationTime,
+          fingerprint.projector.size,
+          fingerprint.projector.modificationTime,
+          new Date().toISOString(),
+          candidateId
         ]
       );
     });

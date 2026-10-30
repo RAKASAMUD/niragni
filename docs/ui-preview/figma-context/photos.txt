@@ -1,0 +1,124 @@
+const imgBackgroundSmokeReference = "https://www.figma.com/api/mcp/asset/de5be33a-8844-4495-a19d-8e4fbdc1eaec.png";
+
+export default function Component03Foto() {
+  return (
+    <div className="bg-[#f7f7f5] content-stretch flex flex-col items-start overflow-clip relative rounded-[32px] size-full" data-node-id="8:56" data-name="03 · Foto">
+      <div className="-translate-x-1/2 absolute bottom-0 h-[589px] left-1/2 w-[392px]" data-node-id="28:171" data-name="Background / smoke reference">
+        <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none size-full" src={imgBackgroundSmokeReference} />
+      </div>
+      <div className="[word-break:break-word] content-stretch flex h-[44px] items-start justify-between leading-[1.25] overflow-clip pb-[8px] pt-[14px] px-[26px] relative shrink-0 text-[#11121a] w-[390px]" data-node-id="8:57" data-name="System status">
+        <p className="font-['Manrope:Bold'] font-bold relative shrink-0 text-[14px] whitespace-nowrap" data-node-id="8:58">
+          9:41
+        </p>
+        <p className="font-['Manrope:SemiBold'] font-semibold relative shrink-0 text-[13px] whitespace-pre" data-node-id="8:59">{`●  ▰`}</p>
+      </div>
+      <div className="[word-break:break-word] content-stretch flex flex-col gap-[6px] h-[84px] items-start leading-[1.3] overflow-clip px-[24px] py-[8px] relative shrink-0 w-[390px]" data-node-id="8:60" data-name="Navigation and heading">
+        <div className="content-stretch flex font-['Manrope:SemiBold'] font-semibold h-[18px] items-start justify-between overflow-clip relative shrink-0 text-[#656575] w-[342px]" data-node-id="8:61" data-name="Back and help">
+          <p className="relative shrink-0 text-[12px] w-[200px]" data-node-id="8:62">
+            ‹ Buat laporan
+          </p>
+          <p className="relative shrink-0 text-[11px] w-[110px]" data-node-id="8:63">
+            Kanal bantuan
+          </p>
+        </div>
+        <p className="font-['SF_Pro:Expanded_Regular'] font-[410] relative shrink-0 text-[#11121a] text-[26px] w-[342px]" data-node-id="8:64" style={{ fontVariationSettings: '"wdth" 132' }}>
+          Foto laporan
+        </p>
+      </div>
+      <div className="content-stretch flex flex-col gap-[14px] h-[668px] items-start overflow-clip px-[24px] py-[12px] relative shrink-0 w-[390px]" data-node-id="8:65" data-name="Scrollable content">
+        <p className="[word-break:break-word] font-['SF_Pro:Regular'] font-normal leading-[1.3] relative shrink-0 text-[#656575] text-[12px] w-[342px]" data-node-id="8:67" style={{ fontVariationSettings: '"wdth" 100' }}>
+          Pilih foto lokal. Maksimal 3 foto; 20 MB per foto.
+        </p>
+        <div className="bg-[#b2d9ea] content-stretch flex flex-col gap-[6px] items-start overflow-clip p-[16px] relative rounded-[24px] shadow-[0px_2px_8px_0px_rgba(18,31,38,0.08)] shrink-0 w-[342px]" data-node-id="8:68" data-name="1 dari 3 foto">
+          <div className="content-stretch flex gap-[10px] items-center overflow-clip relative shrink-0 w-[310px]" data-node-id="23:127" data-name="Visual heading">
+            <div className="content-stretch flex items-center justify-center overflow-clip relative rounded-[11px] shrink-0 size-[32px]" data-node-id="23:128" data-name="Icon badge / camera">
+              <CodeConnectSnippet data-node-id="23:129" data-name="Icon / camera">
+                {/* Simple Design System component */}
+                <Camera />
+              </CodeConnectSnippet>
+            </div>
+            <p className="[word-break:break-word] font-['Manrope:Bold'] font-bold leading-[1.3] relative shrink-0 text-[#11121a] text-[17px] w-[268px]" data-node-id="8:69">
+              1 dari 3 foto
+            </p>
+          </div>
+          <div className="[word-break:break-word] content-stretch flex gap-[12px] h-[158px] items-start overflow-clip relative shrink-0 text-[#11121a] w-[306px]" data-node-id="8:70" data-name="Photo layout">
+            <div className="bg-[#b2d9ea] content-stretch flex flex-col gap-[10px] h-[158px] items-start overflow-clip p-[16px] relative rounded-[18px] shadow-[0px_2px_8px_0px_rgba(18,31,38,0.08)] shrink-0 w-[147px]" data-node-id="8:71" data-name="Synthetic photo placeholder">
+              <p className="font-['Manrope:Bold'] font-bold leading-[1.3] relative shrink-0 text-[10px] w-[115px]" data-node-id="8:72">
+                FOTO CONTOH
+              </p>
+              <div className="font-['Manrope:SemiBold'] font-semibold leading-[0] relative shrink-0 text-[18px] w-[115px]" data-node-id="8:73">
+                <p className="leading-[1.3] mb-0">Asap di arah</p>
+                <p className="leading-[1.3]">kebun</p>
+              </div>
+              <p className="font-['Manrope:SemiBold'] font-semibold leading-[1.3] relative shrink-0 text-[11px] w-[115px]" data-node-id="8:74">
+                ✓ Dibagikan
+              </p>
+            </div>
+            <div className="bg-white content-stretch flex flex-col gap-[8px] h-[158px] items-start leading-[1.3] overflow-clip p-[18px] relative rounded-[18px] shadow-[0px_2px_8px_0px_rgba(18,31,38,0.08)] shrink-0 w-[147px]" data-node-id="8:75" data-name="Add photo slot">
+              <p className="font-['Manrope:Regular'] font-normal relative shrink-0 text-[34px] w-[111px]" data-node-id="8:76">
+                +
+              </p>
+              <p className="font-['Manrope:SemiBold'] font-semibold relative shrink-0 text-[12px] w-[111px]" data-node-id="8:77">
+                Tambah foto
+              </p>
+            </div>
+          </div>
+          <div className="[word-break:break-word] content-stretch flex gap-[8px] items-start leading-[1.3] overflow-clip relative shrink-0 w-[302px]" data-node-id="8:78" data-name="Foto 1 · dari galeri">
+            <div className="content-stretch flex flex-col gap-[3px] items-start overflow-clip relative shrink-0 w-[274px]" data-node-id="8:79" data-name="Copy">
+              <p className="font-['SF_Pro:Regular'] font-normal relative shrink-0 text-[#656575] text-[12px] w-[274px]" data-node-id="8:80" style={{ fontVariationSettings: '"wdth" 100' }}>
+                Foto 1 · dari galeri
+              </p>
+              <p className="font-['Manrope:SemiBold'] font-semibold relative shrink-0 text-[#11121a] text-[14px] w-[274px]" data-node-id="8:81">
+                Hapus dari draf
+              </p>
+            </div>
+            <p className="font-['Manrope:Regular'] font-normal relative shrink-0 text-[#11121a] text-[18px] w-[20px]" data-node-id="8:82">
+              →
+            </p>
+          </div>
+        </div>
+        <div className="bg-[#eac3b2] content-stretch flex flex-col gap-[6px] items-start overflow-clip p-[16px] relative rounded-[24px] shadow-[0px_2px_8px_0px_rgba(18,31,38,0.08)] shrink-0 w-[342px]" data-node-id="8:83" data-name="Tambah dari perangkat">
+          <div className="content-stretch flex gap-[10px] items-center overflow-clip relative shrink-0 w-[310px]" data-node-id="23:131" data-name="Visual heading">
+            <div className="content-stretch flex items-center justify-center overflow-clip relative rounded-[11px] shrink-0 size-[32px]" data-node-id="23:132" data-name="Icon badge / camera">
+              <CodeConnectSnippet data-node-id="23:133" data-name="Icon / camera">
+                {/* Simple Design System component */}
+                <Camera />
+              </CodeConnectSnippet>
+            </div>
+            <p className="[word-break:break-word] font-['Manrope:Bold'] font-bold leading-[1.3] relative shrink-0 text-[#11121a] text-[17px] w-[268px]" data-node-id="8:84">
+              Tambah dari perangkat
+            </p>
+          </div>
+          <CodeConnectSnippet data-node-id="8:85" data-name="Action · Ambil foto">
+            {/* Simple Design System component */}
+            <Button instanceSwapIconStart="5:11" iconStart="5:11" booleanHasIconStart={false} hasIconStart={false} booleanHasIconEnd={false} hasIconEnd={false} instanceSwapIconEnd="5:9" iconEnd="5:9" textLabel="Ambil foto" label="Ambil foto" variantVariant="Primary" variant="Primary" variantState="Default" state="Default" variantSize="Medium" size="Medium" />
+          </CodeConnectSnippet>
+          <CodeConnectSnippet data-node-id="8:89" data-name="Action · Pilih dari galeri">
+            {/* Simple Design System component */}
+            <Button instanceSwapIconStart="5:11" iconStart="5:11" booleanHasIconStart={false} hasIconStart={false} booleanHasIconEnd={false} hasIconEnd={false} instanceSwapIconEnd="5:9" iconEnd="5:9" textLabel="Pilih dari galeri" label="Pilih dari galeri" variantVariant="Primary" variant="Primary" variantState="Default" state="Default" variantSize="Medium" size="Medium" />
+          </CodeConnectSnippet>
+        </div>
+      </div>
+      <div className="content-stretch flex flex-col h-[104px] items-start overflow-clip pb-[12px] pt-[4px] px-[24px] relative shrink-0 w-[390px]" data-node-id="8:66" data-name="Safe-area actions">
+        <CodeConnectSnippet data-node-id="8:94" data-name="Action · Simpan pilihan foto">
+          {/* Simple Design System component */}
+          <Button instanceSwapIconStart="5:11" iconStart="5:11" booleanHasIconStart={false} hasIconStart={false} booleanHasIconEnd={false} hasIconEnd={false} instanceSwapIconEnd="5:9" iconEnd="5:9" textLabel="Simpan pilihan foto" label="Simpan pilihan foto" variantVariant="Primary" variant="Primary" variantState="Default" state="Default" variantSize="Medium" size="Medium" />
+        </CodeConnectSnippet>
+      </div>
+    </div>
+  );
+}
+
+SUPER CRITICAL: The generated React+Tailwind code MUST be converted to match the target project's technology stack and styling system.
+1. Analyze the target codebase to identify: technology stack, styling approach, component patterns, and design tokens
+2. Convert React syntax to the target framework/library
+3. Transform all Tailwind classes to the target styling system while preserving exact visual design
+4. Follow the project's existing patterns and conventions
+DO NOT install any Tailwind as a dependency unless the user instructs you to do so.
+
+
+Node ids have been added to the code as data attributes, e.g. `data-node-id="1:2"`.
+
+If the node is connected to a code component in the users codebase via Code Connect, the connected component will be included in the final markup wrapped in a CodeConnectSnippet element, with relevant imports at the top of the file. There are two formats: 1. Single snippet: <CodeConnectSnippet data-snippet-language="React"><TitleComponent>Hello World</TitleComponent></CodeConnectSnippet> 2. Multiple options: <CodeConnectSnippet data-snippet-language="React" options={[<Button variant="primary" />, <Button variant="secondary" />]} /> IMPORTANT: the CodeConnectSnippet wrapper element should not be part of the final code. For the options format, choose the single most appropriate option to use in your implementation. The source of the code component will be in the import path, e.g. import {ComponentName } from 'path/to/component'; IMPORTANT: the import path may not be relative/may point to a URL, so you should search for the component in the codebase and MUST use it if possible.
+
+The generated code contains image and SVG URL constants, e.g. const image = 'https://www.figma.com/api/mcp/asset/550e8400-e29b-41d4-a716-446655440000.png'. These URLs are temporary download sources and expire after 7 days. Download each asset into the project with curl -L, then replace its URL in the generated code with a reference to the downloaded asset. Never use the temporary URLs as runtime image sources.

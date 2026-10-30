@@ -1,0 +1,141 @@
+const imgBackgroundSmokeReference = "https://www.figma.com/api/mcp/asset/8e846c6f-6a31-4ee7-919d-b0256e7e648f.png";
+
+export default function Component11DetailDraf() {
+  return (
+    <div className="bg-[#f7f7f5] content-stretch flex flex-col items-start overflow-clip relative rounded-[32px] size-full" data-node-id="10:73" data-name="11 · Detail draf">
+      <div className="-translate-x-1/2 absolute bottom-0 h-[589px] left-1/2 w-[392px]" data-node-id="28:179" data-name="Background / smoke reference">
+        <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none size-full" src={imgBackgroundSmokeReference} />
+      </div>
+      <div className="[word-break:break-word] content-stretch flex h-[44px] items-start justify-between leading-[1.25] overflow-clip pb-[8px] pt-[14px] px-[26px] relative shrink-0 text-[#11121a] w-[390px]" data-node-id="10:74" data-name="System status">
+        <p className="font-['Manrope:Bold'] font-bold relative shrink-0 text-[14px] whitespace-nowrap" data-node-id="10:75">
+          9:41
+        </p>
+        <p className="font-['Manrope:SemiBold'] font-semibold relative shrink-0 text-[13px] whitespace-pre" data-node-id="10:76">{`●  ▰`}</p>
+      </div>
+      <div className="[word-break:break-word] content-stretch flex flex-col gap-[6px] h-[84px] items-start leading-[1.3] overflow-clip px-[24px] py-[8px] relative shrink-0 w-[390px]" data-node-id="10:77" data-name="Navigation and heading">
+        <div className="content-stretch flex font-['Manrope:SemiBold'] font-semibold h-[18px] items-start justify-between overflow-clip relative shrink-0 text-[#656575] w-[342px]" data-node-id="10:78" data-name="Back and help">
+          <p className="relative shrink-0 text-[12px] w-[200px]" data-node-id="10:79">
+            ‹ Laporan
+          </p>
+          <p className="relative shrink-0 text-[11px] w-[110px]" data-node-id="10:80">
+            Kanal bantuan
+          </p>
+        </div>
+        <p className="font-['SF_Pro:Expanded_Regular'] font-[410] relative shrink-0 text-[#11121a] text-[26px] w-[342px]" data-node-id="10:81" style={{ fontVariationSettings: '"wdth" 132' }}>
+          Detail draf
+        </p>
+      </div>
+      <div className="content-stretch flex flex-col gap-[14px] h-[668px] items-start overflow-clip px-[24px] py-[12px] relative shrink-0 w-[390px]" data-node-id="10:82" data-name="Scrollable content">
+        <div className="bg-[#eac3b2] content-stretch flex h-[26px] items-start overflow-clip px-[10px] py-[5px] relative rounded-[15px] shrink-0 w-[84px]" data-node-id="10:84" data-name="Draf lokal">
+          <p className="[word-break:break-word] font-['Manrope:SemiBold'] font-semibold leading-[1.3] relative shrink-0 text-[#11121a] text-[11px] w-[64px]" data-node-id="10:85">
+            Draf lokal
+          </p>
+        </div>
+        <div className="bg-[#b2d9ea] content-stretch flex flex-col gap-[6px] items-start overflow-clip p-[16px] relative rounded-[24px] shadow-[0px_2px_8px_0px_rgba(18,31,38,0.08)] shrink-0 w-[342px]" data-node-id="10:86" data-name="Asap dari arah kebun">
+          <div className="content-stretch flex gap-[10px] items-center overflow-clip relative shrink-0 w-[310px]" data-node-id="23:215" data-name="Visual heading">
+            <div className="content-stretch flex items-center justify-center overflow-clip relative rounded-[11px] shrink-0 size-[32px]" data-node-id="23:216" data-name="Icon badge / file">
+              <CodeConnectSnippet data-node-id="23:217" data-name="Icon / file">
+                {/* Simple Design System component */}
+                <FileText />
+              </CodeConnectSnippet>
+            </div>
+            <p className="[word-break:break-word] font-['Manrope:Bold'] font-bold leading-[1.3] relative shrink-0 text-[#11121a] text-[17px] w-[268px]" data-node-id="10:87">
+              Asap dari arah kebun
+            </p>
+          </div>
+          <p className="[word-break:break-word] font-['SF_Pro:Regular'] font-normal leading-[1.3] relative shrink-0 text-[#11121a] text-[15px] w-[306px]" data-node-id="10:88" style={{ fontVariationSettings: '"wdth" 100' }}>
+            Terlihat asap putih dari arah kebun di seberang jalan. Sumber asap belum diketahui.
+          </p>
+          <p className="[word-break:break-word] font-['SF_Pro:Regular'] font-normal leading-[1.3] relative shrink-0 text-[#11121a] text-[12px] w-[306px]" data-node-id="10:89" style={{ fontVariationSettings: '"wdth" 100' }}>
+            29 Okt 2026 · 08.32 WIB
+          </p>
+        </div>
+        <div className="bg-white content-stretch flex flex-col gap-[6px] items-start overflow-clip p-[16px] relative rounded-[24px] shadow-[0px_2px_8px_0px_rgba(18,31,38,0.08)] shrink-0 w-[342px]" data-node-id="10:90" data-name="Rincian">
+          <div className="content-stretch flex gap-[10px] items-center overflow-clip relative shrink-0 w-[310px]" data-node-id="23:219" data-name="Visual heading">
+            <div className="content-stretch flex items-center justify-center overflow-clip relative rounded-[11px] shrink-0 size-[32px]" data-node-id="23:220" data-name="Icon badge / file">
+              <CodeConnectSnippet data-node-id="23:221" data-name="Icon / file">
+                {/* Simple Design System component */}
+                <FileText />
+              </CodeConnectSnippet>
+            </div>
+            <p className="[word-break:break-word] font-['Manrope:Bold'] font-bold leading-[1.3] relative shrink-0 text-[#11121a] text-[17px] w-[268px]" data-node-id="10:91">
+              Rincian
+            </p>
+          </div>
+          <div className="[word-break:break-word] content-stretch flex gap-[8px] items-start leading-[1.3] overflow-clip relative shrink-0 w-[306px]" data-node-id="10:92" data-name="Lokasi kejadian">
+            <div className="content-stretch flex flex-col gap-[3px] items-start overflow-clip relative shrink-0 w-[274px]" data-node-id="10:93" data-name="Copy">
+              <p className="font-['SF_Pro:Regular'] font-normal relative shrink-0 text-[#656575] text-[12px] w-[274px]" data-node-id="10:94" style={{ fontVariationSettings: '"wdth" 100' }}>
+                Lokasi kejadian
+              </p>
+              <p className="font-['Manrope:SemiBold'] font-semibold relative shrink-0 text-[#11121a] text-[14px] w-[274px]" data-node-id="10:95">
+                Seberang jalan, arah utara
+              </p>
+            </div>
+            <p className="font-['Manrope:Regular'] font-normal relative shrink-0 text-[#11121a] text-[18px] w-[20px]" data-node-id="10:96">
+              →
+            </p>
+          </div>
+          <div className="[word-break:break-word] content-stretch flex gap-[8px] items-start leading-[1.3] overflow-clip relative shrink-0 w-[306px]" data-node-id="10:97" data-name="Lampiran">
+            <div className="content-stretch flex flex-col gap-[3px] items-start overflow-clip relative shrink-0 w-[274px]" data-node-id="10:98" data-name="Copy">
+              <p className="font-['SF_Pro:Regular'] font-normal relative shrink-0 text-[#656575] text-[12px] w-[274px]" data-node-id="10:99" style={{ fontVariationSettings: '"wdth" 100' }}>
+                Lampiran
+              </p>
+              <p className="font-['Manrope:SemiBold'] font-semibold relative shrink-0 text-[#11121a] text-[14px] w-[274px]" data-node-id="10:100">
+                1 foto · posisi tepat tidak dibagikan
+              </p>
+            </div>
+            <p className="font-['Manrope:Regular'] font-normal relative shrink-0 text-[#11121a] text-[18px] w-[20px]" data-node-id="10:101">
+              →
+            </p>
+          </div>
+        </div>
+        <div className="bg-[#b2d9ea] content-stretch flex flex-col gap-[6px] items-start overflow-clip p-[16px] relative rounded-[24px] shadow-[0px_2px_8px_0px_rgba(18,31,38,0.08)] shrink-0 w-[342px]" data-node-id="10:102" data-name="Aktivitas berbagi">
+          <div className="content-stretch flex gap-[10px] items-center overflow-clip relative shrink-0 w-[310px]" data-node-id="23:223" data-name="Visual heading">
+            <div className="content-stretch flex items-center justify-center overflow-clip relative rounded-[11px] shrink-0 size-[32px]" data-node-id="23:224" data-name="Icon badge / share">
+              <CodeConnectSnippet data-node-id="23:225" data-name="Icon / share">
+                {/* Simple Design System component */}
+                <Share />
+              </CodeConnectSnippet>
+            </div>
+            <p className="[word-break:break-word] font-['Manrope:Bold'] font-bold leading-[1.3] relative shrink-0 text-[#11121a] text-[17px] w-[268px]" data-node-id="10:103">
+              Aktivitas berbagi
+            </p>
+          </div>
+          <p className="[word-break:break-word] font-['Manrope:Bold'] font-bold leading-[1.3] relative shrink-0 text-[#11121a] text-[14px] w-[306px]" data-node-id="10:104">
+            Pilihan berbagi dibuka
+          </p>
+          <div className="[word-break:break-word] font-['SF_Pro:Regular'] font-normal leading-[0] relative shrink-0 text-[#11121a] text-[12px] w-[306px]" data-node-id="10:105" style={{ fontVariationSettings: '"wdth" 100' }}>
+            <p className="leading-[1.3] mb-0">Hari ini · 08.39 WIB</p>
+            <p className="leading-[1.3]">Penerimaan belum diketahui.</p>
+          </div>
+        </div>
+        <p className="[word-break:break-word] font-['Manrope:SemiBold'] font-semibold leading-[1.3] relative shrink-0 text-[#922d42] text-[12px] w-[342px]" data-node-id="10:106">
+          Hapus draf
+        </p>
+      </div>
+      <div className="content-stretch flex flex-col gap-[8px] h-[104px] items-start overflow-clip pb-[12px] pt-[4px] px-[24px] relative shrink-0 w-[390px]" data-node-id="10:83" data-name="Safe-area actions">
+        <CodeConnectSnippet data-node-id="10:107" data-name="Action · Edit draf">
+          {/* Simple Design System component */}
+          <Button instanceSwapIconStart="5:11" iconStart="5:11" booleanHasIconStart={false} hasIconStart={false} booleanHasIconEnd={false} hasIconEnd={false} instanceSwapIconEnd="5:9" iconEnd="5:9" textLabel="Edit draf" label="Edit draf" variantVariant="Primary" variant="Primary" variantState="Default" state="Default" variantSize="Medium" size="Medium" />
+        </CodeConnectSnippet>
+        <p className="[word-break:break-word] font-['Manrope:SemiBold'] font-semibold leading-[1.3] relative shrink-0 text-[#656575] text-[12px] w-[342px]" data-node-id="10:111">
+          Bagikan lagi
+        </p>
+      </div>
+    </div>
+  );
+}
+
+SUPER CRITICAL: The generated React+Tailwind code MUST be converted to match the target project's technology stack and styling system.
+1. Analyze the target codebase to identify: technology stack, styling approach, component patterns, and design tokens
+2. Convert React syntax to the target framework/library
+3. Transform all Tailwind classes to the target styling system while preserving exact visual design
+4. Follow the project's existing patterns and conventions
+DO NOT install any Tailwind as a dependency unless the user instructs you to do so.
+
+
+Node ids have been added to the code as data attributes, e.g. `data-node-id="1:2"`.
+
+If the node is connected to a code component in the users codebase via Code Connect, the connected component will be included in the final markup wrapped in a CodeConnectSnippet element, with relevant imports at the top of the file. There are two formats: 1. Single snippet: <CodeConnectSnippet data-snippet-language="React"><TitleComponent>Hello World</TitleComponent></CodeConnectSnippet> 2. Multiple options: <CodeConnectSnippet data-snippet-language="React" options={[<Button variant="primary" />, <Button variant="secondary" />]} /> IMPORTANT: the CodeConnectSnippet wrapper element should not be part of the final code. For the options format, choose the single most appropriate option to use in your implementation. The source of the code component will be in the import path, e.g. import {ComponentName } from 'path/to/component'; IMPORTANT: the import path may not be relative/may point to a URL, so you should search for the component in the codebase and MUST use it if possible.
+
+The generated code contains image and SVG URL constants, e.g. const image = 'https://www.figma.com/api/mcp/asset/550e8400-e29b-41d4-a716-446655440000.png'. These URLs are temporary download sources and expire after 7 days. Download each asset into the project with curl -L, then replace its URL in the generated code with a reference to the downloaded asset. Never use the temporary URLs as runtime image sources.

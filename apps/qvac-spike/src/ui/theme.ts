@@ -1,76 +1,97 @@
 /**
  * Bara design tokens and theme hook.
- * Tokens from Bara-UI-Spec v0.9. Quiet, clean, native. No decorative fire.
- * Colors are candidates; contrast must be measured on real pairings
- * (normal text >= 4.5:1, large/important UI >= 3:1).
+ * Colors aligned with approved Figma design (cyan #B2D9EA, peach #EAC3B2, canvas #F7F7F5, text #11121A).
+ * Always serves the approved light pastel theme per user & coordinator instruction.
  */
-import { useColorScheme } from 'react-native';
+import { useEffect, useState } from 'react';
+import { AccessibilityInfo, ViewStyle } from 'react-native';
 
 export interface BaraTheme {
   readonly dark: boolean;
   readonly canvas: string;
   readonly surface: string;
+  readonly cyan: string;
+  readonly peach: string;
   readonly textPrimary: string;
   readonly textSecondary: string;
+  readonly textMuted: string;
   readonly actionBg: string;
   readonly actionText: string;
   readonly destructive: string;
   readonly destructiveText: string;
   readonly border: string;
   readonly overlay: string;
+  readonly cardShadow: ViewStyle;
 }
 
 const LIGHT: BaraTheme = {
   dark: false,
-  canvas: '#F7F8FA',
+  canvas: '#F7F7F5',
   surface: '#FFFFFF',
-  textPrimary: '#17212B',
-  textSecondary: '#4B5967',
-  actionBg: '#175A46',
+  cyan: '#B2D9EA',
+  peach: '#EAC3B2',
+  textPrimary: '#11121A',
+  textSecondary: '#656575',
+  textMuted: '#465257',
+  actionBg: '#11121A',
   actionText: '#FFFFFF',
   destructive: '#B3261E',
   destructiveText: '#FFFFFF',
-  border: '#E2E6EB',
-  overlay: 'rgba(15,23,32,0.35)',
+  border: '#DFDEE5',
+  overlay: 'rgba(17,18,26,0.35)',
+  cardShadow: {
+    shadowColor: '#121F26',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    elevation: 2,
+  },
 };
 
-const DARK: BaraTheme = {
-  dark: true,
-  canvas: '#121416',
-  surface: '#1D2125',
-  textPrimary: '#F3F5F7',
-  textSecondary: '#BEC7D0',
-  actionBg: '#A3E5C8',
-  actionText: '#0F1A15',
-  destructive: '#FFB4AB',
-  destructiveText: '#1A1210',
-  border: '#2B3036',
-  overlay: 'rgba(0,0,0,0.5)',
-};
+/** Spacing scale in logical units: 4, 8, 12, 16, 20, 24, 32. */
+export const space = { xs: 4, sm: 8, md: 12, lg: 16, xl: 20, xxl: 24, xxxl: 32 } as const;
 
-/** Spacing scale in logical units per spec: 4, 8, 12, 16, 24, 32. */
-export const space = { xs: 4, sm: 8, md: 12, lg: 16, xl: 24, xxl: 32 } as const;
-
-/** Radii per spec: 12 input, 16 surface. Not everything is a pill. */
-export const radius = { input: 12, surface: 16, pill: 999 } as const;
+/** Radii per Figma spec: 16 input, 22-26 card, 999 pill. */
+export const radius = { input: 16, card: 24, pill: 999 } as const;
 
 /**
- * Type scale. Body ~16/17, heading 28/32, label 14. Platform default fonts;
- * hierarchy from weight and spacing. Respects the system text-size setting
- * because we do not set allowFontScaling=false and use relative sizes.
+ * Type scale.
+ * Heading Figma SF Pro Expanded Regular weight ~410:
+ * Uses fontWeight '500' / '400' with subtle letterSpacing rather than heavy 700.
  */
 export const type = {
-  heading: { fontSize: 28, fontWeight: '700' as const, letterSpacing: -0.3 },
-  title: { fontSize: 22, fontWeight: '700' as const, letterSpacing: -0.2 },
-  body: { fontSize: 17, fontWeight: '400' as const },
-  label: { fontSize: 14, fontWeight: '600' as const },
-  caption: { fontSize: 13, fontWeight: '400' as const },
+  heading: { fontSize: 26, lineHeight: 32, fontWeight: '500' as const, letterSpacing: 0.2 },
+  title: { fontSize: 21, lineHeight: 26, fontWeight: '500' as const, letterSpacing: 0.1 },
+  section: { fontSize: 17, lineHeight: 22, fontWeight: '600' as const },
+  body: { fontSize: 14, lineHeight: 20, fontWeight: '400' as const },
+  label: { fontSize: 14, lineHeight: 18, fontWeight: '500' as const },
+  caption: { fontSize: 12, lineHeight: 16, fontWeight: '400' as const },
+  small: { fontSize: 10, lineHeight: 14, fontWeight: '500' as const },
 };
 
 /** Minimum touch target (Android 48dp; iOS 44pt — use the larger). */
 export const MIN_TOUCH = 48;
 
+/**
+ * Approved Figma design specifies light pastel theme (cyan, peach, #F7F7F5).
+ * Explicitly returns LIGHT to ensure uniform design regardless of host OS dark mode setting.
+ */
 export function useTheme(): BaraTheme {
-  const scheme = useColorScheme();
-  return scheme === 'dark' ? DARK : LIGHT;
+  return LIGHT;
+}
+
+/** Hook returning true if user requested reduced motion in OS settings. */
+export function useReducedMotion(): boolean {
+  const [reduced, setReduced] = useState(false);
+  useEffect(() => {
+    let active = true;
+    void AccessibilityInfo.isReduceMotionEnabled()
+      .then((v) => { if (active) setReduced(v); })
+      .catch(() => {});
+    const sub = AccessibilityInfo.addEventListener('reduceMotionChanged', (v) => {
+      setReduced(v);
+    });
+    return () => { active = false; sub.remove(); };
+  }, []);
+  return reduced;
 }

@@ -120,7 +120,16 @@ try {
   New-Item -ItemType Directory -Path $artifactDirectory -Force | Out-Null
   $apkTarget = Join-Path $artifactDirectory 'niragni-android.apk'
   Copy-Item -LiteralPath $apkSource -Destination $apkTarget -Force
-  $digest = (Get-FileHash -LiteralPath $apkTarget -Algorithm SHA256).Hash
+  # Windows PowerShell launched from another host may not discover Utility cmdlets.
+  # Use the .NET API available in PowerShell 5.1 without module auto-loading.
+  $apkStream = [IO.File]::OpenRead($apkTarget)
+  $apkSha256 = [Security.Cryptography.SHA256]::Create()
+  try {
+    $digest = [BitConverter]::ToString($apkSha256.ComputeHash($apkStream)).Replace('-', '')
+  } finally {
+    $apkSha256.Dispose()
+    $apkStream.Dispose()
+  }
   [IO.File]::WriteAllText("$apkTarget.sha256", "$digest  niragni-android.apk`n")
   Write-Output "APK: $apkTarget"
   Write-Output "SHA256: $digest"

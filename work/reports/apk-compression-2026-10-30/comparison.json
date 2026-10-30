@@ -1,0 +1,758 @@
+{
+  "baseline": {
+    "name": "niragni-android-uncompressed-2026-10-29.apk",
+    "bytes": 243398110,
+    "sha256": "2C21EEAA874E7697CE262FB07CB55BBB3924CF2E072C8474B3D5A7843E826D27",
+    "native_count": 60,
+    "native_packed_bytes": 206190520,
+    "native_raw_bytes": 206190520,
+    "bundle": {
+      "bytes": 21831996,
+      "packed_bytes": 21831996,
+      "method": 0
+    },
+    "native": {
+      "lib/arm64-v8a/libappmodules.so": {
+        "bytes": 621984,
+        "packed_bytes": 621984,
+        "method": 0,
+        "sha256": "f4e2d9a7789aa8c7550b48fc6b695005935ce4fe565d96e9c7e254cc5b6efb0f"
+      },
+      "lib/arm64-v8a/libbare-abort.2.0.14.so": {
+        "bytes": 10616,
+        "packed_bytes": 10616,
+        "method": 0,
+        "sha256": "a2cec0ac70a3d8c0931454f690f8431c44c7bbc8a8914348cf610c807a83c397"
+      },
+      "lib/arm64-v8a/libbare-buffer.3.7.1.so": {
+        "bytes": 48040,
+        "packed_bytes": 48040,
+        "method": 0,
+        "sha256": "4e712a8f4b7fe5415147021ba6ad8e3b814f7d3153ce20a18b908f93cbc2a1d9"
+      },
+      "lib/arm64-v8a/libbare-cpu-info.0.1.1.so": {
+        "bytes": 27344,
+        "packed_bytes": 27344,
+        "method": 0,
+        "sha256": "f7d7dff83c8fee9de38f8da8f72ae37ff1963d3e414e8db4d394d40c2697c78e"
+      },
+      "lib/arm64-v8a/libbare-crypto.1.15.4.so": {
+        "bytes": 834712,
+        "packed_bytes": 834712,
+        "method": 0,
+        "sha256": "091689b50aff066dcefc3712c952ff1d61cd3d43c08c83bb5a7e203c88f2c1ac"
+      },
+      "lib/arm64-v8a/libbare-dns.2.3.1.so": {
+        "bytes": 163296,
+        "packed_bytes": 163296,
+        "method": 0,
+        "sha256": "65f8513c6953ace1fe56be6e39d9750bd4781aaf72fbb10ab0dbe591bc395a22"
+      },
+      "lib/arm64-v8a/libbare-fs.4.8.4.so": {
+        "bytes": 60984,
+        "packed_bytes": 60984,
+        "method": 0,
+        "sha256": "98948a61b33a1bed6c3a0cd85a4ddf93802c3b2fd1d83d14dc95314c9efa9459"
+      },
+      "lib/arm64-v8a/libbare-gpu-info.0.1.1.so": {
+        "bytes": 27376,
+        "packed_bytes": 27376,
+        "method": 0,
+        "sha256": "125c1d3a624c41309e11d83c9b0c18f21cff51eafa89964dd341dff7478160c3"
+      },
+      "lib/arm64-v8a/libbare-hrtime.2.1.2.so": {
+        "bytes": 10496,
+        "packed_bytes": 10496,
+        "method": 0,
+        "sha256": "446bbb007e070280f60e191c8e63836450c10153e852519998ac48c1aa48c738"
+      },
+      "lib/arm64-v8a/libbare-inspect.3.1.10.so": {
+        "bytes": 14704,
+        "packed_bytes": 14704,
+        "method": 0,
+        "sha256": "e55db27c12d19e3a637f44642a25817f611da64dfcbae40406be1becef2df461"
+      },
+      "lib/arm64-v8a/libbare-kit.so": {
+        "bytes": 65541304,
+        "packed_bytes": 65541304,
+        "method": 0,
+        "sha256": "39509a4aa0c3e8a3867480726aa38b88c5d770bdff18cb1c1cc3d02ea65d5ac5"
+      },
+      "lib/arm64-v8a/libbare-os.3.9.3.so": {
+        "bytes": 40424,
+        "packed_bytes": 40424,
+        "method": 0,
+        "sha256": "7b9932c98afaca95239cd3fab3b55275f6137194787b19d494a0a2a4c40be400"
+      },
+      "lib/arm64-v8a/libbare-path.3.1.2.so": {
+        "bytes": 10608,
+        "packed_bytes": 10608,
+        "method": 0,
+        "sha256": "c75471b324515fc6858c5d139ff11bbecf2cd209e7d0b53ff19ee4288bdb2c79"
+      },
+      "lib/arm64-v8a/libbare-performance.2.1.1.so": {
+        "bytes": 36800,
+        "packed_bytes": 36800,
+        "method": 0,
+        "sha256": "ffff3bf1a845ecdc27bb9322f6fd64b3b43c265a943173de0c2da12c71cf4144"
+      },
+      "lib/arm64-v8a/libbare-pipe.4.4.0.so": {
+        "bytes": 28056,
+        "packed_bytes": 28056,
+        "method": 0,
+        "sha256": "91733b2e47c31cf61f0e0a7f51588e92a80d31cbf4ef93404aa2b73e7ad9e2a2"
+      },
+      "lib/arm64-v8a/libbare-signals.5.0.0.so": {
+        "bytes": 19088,
+        "packed_bytes": 19088,
+        "method": 0,
+        "sha256": "2dd615d0bddd4c0cf64105968f0f7244f3a6c70cf5a8d7bbc530c8a929f3f580"
+      },
+      "lib/arm64-v8a/libbare-stdio.1.0.3.so": {
+        "bytes": 10528,
+        "packed_bytes": 10528,
+        "method": 0,
+        "sha256": "576611212975c67f32e14cb5b579dce2345fc536c77b5131153f84bc77d2da05"
+      },
+      "lib/arm64-v8a/libbare-structured-clone.2.0.1.so": {
+        "bytes": 19288,
+        "packed_bytes": 19288,
+        "method": 0,
+        "sha256": "417c837cd367e24c6665f7c8c6704d95badc241b538795b24d1e3663015bd2c9"
+      },
+      "lib/arm64-v8a/libbare-subprocess.6.2.2.so": {
+        "bytes": 19480,
+        "packed_bytes": 19480,
+        "method": 0,
+        "sha256": "caf6851fff9302528155d593dfaff60e8043d6db27c954abde6fcbcd25577e4b"
+      },
+      "lib/arm64-v8a/libbare-tcp.2.6.1.so": {
+        "bytes": 19240,
+        "packed_bytes": 19240,
+        "method": 0,
+        "sha256": "4ad1f519427e4340bc56eeaa3b0877f6dc16b53e89aaf6f89cd461f3d2c82b61"
+      },
+      "lib/arm64-v8a/libbare-tls.3.2.0.so": {
+        "bytes": 1838808,
+        "packed_bytes": 1838808,
+        "method": 0,
+        "sha256": "455dfc38b09c82c3c98774eaba0626e81f478f96dfc5319942842a2a9124f04c"
+      },
+      "lib/arm64-v8a/libbare-tty.5.2.1.so": {
+        "bytes": 19360,
+        "packed_bytes": 19360,
+        "method": 0,
+        "sha256": "cca05e9f93bea3e6db1ff1bf97c89903c87f84114abed7fdb22987e1aae25e2e"
+      },
+      "lib/arm64-v8a/libbare-type.1.4.0.so": {
+        "bytes": 14752,
+        "packed_bytes": 14752,
+        "method": 0,
+        "sha256": "28b2a0f3468ef65f4edefdc75f16fbbb1779b54dc5d02edbb697144a4ca8b283"
+      },
+      "lib/arm64-v8a/libbare-url.2.5.5.so": {
+        "bytes": 232256,
+        "packed_bytes": 232256,
+        "method": 0,
+        "sha256": "1fed27fd7a486612232ced4c173cbd74cb37b99a3c65400d5be86290c0d6e9a2"
+      },
+      "lib/arm64-v8a/libbare-zlib.1.4.1.so": {
+        "bytes": 89528,
+        "packed_bytes": 89528,
+        "method": 0,
+        "sha256": "0bf288b6f4422e124d34b2144ca27aff7507088bb6e01860bb23e7075739a4a2"
+      },
+      "lib/arm64-v8a/libc++_shared.so": {
+        "bytes": 1374336,
+        "packed_bytes": 1374336,
+        "method": 0,
+        "sha256": "c4c2fe5cbcb1fba0003a31fc7ab29a9bb12df6cc187ec45a806462540e83d93b"
+      },
+      "lib/arm64-v8a/libexpo-modules-core.so": {
+        "bytes": 1315840,
+        "packed_bytes": 1315840,
+        "method": 0,
+        "sha256": "03f2a34d52b45962f858dc854307a9f4657f1d86c5588a69f49cc2de5c97c456"
+      },
+      "lib/arm64-v8a/libexpo-sqlite.so": {
+        "bytes": 1821624,
+        "packed_bytes": 1821624,
+        "method": 0,
+        "sha256": "917c1616e96d8fb18aa0903d7e80f51e1cb80e7ee17f453c6ba5db7b0af7cb1c"
+      },
+      "lib/arm64-v8a/libfbjni.so": {
+        "bytes": 177000,
+        "packed_bytes": 177000,
+        "method": 0,
+        "sha256": "a9e35ba55d3f956920281f519385f8a72475ee24819799cb08375fdd4cce2b22"
+      },
+      "lib/arm64-v8a/libfs-native-extensions.1.5.2.so": {
+        "bytes": 35944,
+        "packed_bytes": 35944,
+        "method": 0,
+        "sha256": "eec3b90e9b1812f68d74d3969c1d64a114a2cdc230c5855741c21a97ab17c2cb"
+      },
+      "lib/arm64-v8a/libgifimage.so": {
+        "bytes": 318992,
+        "packed_bytes": 318992,
+        "method": 0,
+        "sha256": "9f605249728da7091569772a38a4dde298ed48e1e73fed3da0e4b662ef38715c"
+      },
+      "lib/arm64-v8a/libhermes.so": {
+        "bytes": 2136264,
+        "packed_bytes": 2136264,
+        "method": 0,
+        "sha256": "5705c7e2cf51fcd3befa825ae2a6717524037b368cdac005a7a63c4a92ef4467"
+      },
+      "lib/arm64-v8a/libhermestooling.so": {
+        "bytes": 137456,
+        "packed_bytes": 137456,
+        "method": 0,
+        "sha256": "142247a46e46a9c2b07397b2b69fff61ffe9f635da3c42308d214b134ad73e31"
+      },
+      "lib/arm64-v8a/libimagepipeline.so": {
+        "bytes": 8760,
+        "packed_bytes": 8760,
+        "method": 0,
+        "sha256": "1b377992e4256fa9398ec057722f84a359c7d588e570c8a41f51d930c19ece7d"
+      },
+      "lib/arm64-v8a/libjsi.so": {
+        "bytes": 390736,
+        "packed_bytes": 390736,
+        "method": 0,
+        "sha256": "4473c47c5bd25e2856b6b13f756e39abb299b1c19954830f6efbf13b6b6cf0b4"
+      },
+      "lib/arm64-v8a/libnative-filters.so": {
+        "bytes": 23712,
+        "packed_bytes": 23712,
+        "method": 0,
+        "sha256": "4294b57460e70a6351ce7ae2733a79c088c907dfa54673a657227ec5bb669594"
+      },
+      "lib/arm64-v8a/libnative-imagetranscoder.so": {
+        "bytes": 585376,
+        "packed_bytes": 585376,
+        "method": 0,
+        "sha256": "2aed28298a25afd52ac670cf9682398c6c7ba42a57195c01efd565e7ddfe17ca"
+      },
+      "lib/arm64-v8a/libquickbit-native.2.4.9.so": {
+        "bytes": 60816,
+        "packed_bytes": 60816,
+        "method": 0,
+        "sha256": "4e213fd8f6108ce390eb1d1c281685b9c3e56a72f038eefc0c72f1c08c34f4b7"
+      },
+      "lib/arm64-v8a/libqvac-ggml-cpu-android_armv8.0_1.so": {
+        "bytes": 1629248,
+        "packed_bytes": 1629248,
+        "method": 0,
+        "sha256": "f4eaae02bc5cf7bca3a18acf5bc777f35763be2b2a408ca8707604188146a236"
+      },
+      "lib/arm64-v8a/libqvac-ggml-cpu-android_armv8.2_1.so": {
+        "bytes": 1647672,
+        "packed_bytes": 1647672,
+        "method": 0,
+        "sha256": "b6a878f9830aaca7e4801f8dc4cefe217858f77900db68afdc8697c9e7227e2d"
+      },
+      "lib/arm64-v8a/libqvac-ggml-cpu-android_armv8.2_2.so": {
+        "bytes": 1647800,
+        "packed_bytes": 1647800,
+        "method": 0,
+        "sha256": "23ca2fe13363da8b381672e426fbae8d5a3fb118283d2aaa61c2a60d4f6a03d7"
+      },
+      "lib/arm64-v8a/libqvac-ggml-cpu-android_armv8.6_1.so": {
+        "bytes": 1659648,
+        "packed_bytes": 1659648,
+        "method": 0,
+        "sha256": "69a113858c2112c9e7f58fd50da43c3da09261acdcab476b3cf2340bc6bca15e"
+      },
+      "lib/arm64-v8a/libqvac-ggml-cpu-android_armv9.0_1.so": {
+        "bytes": 1645272,
+        "packed_bytes": 1645272,
+        "method": 0,
+        "sha256": "8c97e2e6a386fc5ebbe5cc64c66f70b046194020e91c18e8f9371da3852b752a"
+      },
+      "lib/arm64-v8a/libqvac-ggml-cpu-android_armv9.2_1.so": {
+        "bytes": 1645272,
+        "packed_bytes": 1645272,
+        "method": 0,
+        "sha256": "182cef006637a4534bb1629b1ff766483457b8a78acf8e469bd35f37156dc01f"
+      },
+      "lib/arm64-v8a/libqvac-ggml-cpu-android_armv9.2_2.so": {
+        "bytes": 1645272,
+        "packed_bytes": 1645272,
+        "method": 0,
+        "sha256": "401e1c761e5f673dac0297e815caf19632a917295c190c64aecd5288789d785b"
+      },
+      "lib/arm64-v8a/libqvac-ggml-opencl.so": {
+        "bytes": 3657904,
+        "packed_bytes": 3657904,
+        "method": 0,
+        "sha256": "a9bedcb52eead802d4ac024cf42e2cd99655bca0c3de959ad02c4c9e13410e0b"
+      },
+      "lib/arm64-v8a/libqvac-ggml-rpc.so": {
+        "bytes": 893088,
+        "packed_bytes": 893088,
+        "method": 0,
+        "sha256": "f321724dc793d536c6c5cd584a5bdb34468f98376e1c6206781e82cb1216a396"
+      },
+      "lib/arm64-v8a/libqvac-ggml-vulkan.so": {
+        "bytes": 87238088,
+        "packed_bytes": 87238088,
+        "method": 0,
+        "sha256": "ef0063143cfcf96b56b8412ad9766a978c2cc2c7e1b5a6ec903caf128e02b2af"
+      },
+      "lib/arm64-v8a/libqvac__fabric-android-arm64.0.22.0.so": {
+        "bytes": 8731376,
+        "packed_bytes": 8731376,
+        "method": 0,
+        "sha256": "c25d2f2f9f87598fd3a8ed5615c2de10684e15b87f2cec53fe6e52986afa24d7"
+      },
+      "lib/arm64-v8a/libqvac__llm-llamacpp.0.61.2.so": {
+        "bytes": 1428896,
+        "packed_bytes": 1428896,
+        "method": 0,
+        "sha256": "a38b0d581c70c1a4c6bc03d9b311e3622408cf056918413518f72d866faed130"
+      },
+      "lib/arm64-v8a/librabin-native.2.0.1.so": {
+        "bytes": 14856,
+        "packed_bytes": 14856,
+        "method": 0,
+        "sha256": "c0f3d729f3bc11f550dccb6211199ed149536c9fd3bda53f4a9c898aa68f2c80"
+      },
+      "lib/arm64-v8a/libreact_codegen_rnscreens.so": {
+        "bytes": 718272,
+        "packed_bytes": 718272,
+        "method": 0,
+        "sha256": "83b66e6864c16da596a770db48746f93bb55f949d54068de9fbbef86783502b5"
+      },
+      "lib/arm64-v8a/libreact_codegen_safeareacontext.so": {
+        "bytes": 161176,
+        "packed_bytes": 161176,
+        "method": 0,
+        "sha256": "8ef0b20aa33c007397da2fadb8989a36519597dac46049eaeb045f4da49af6c6"
+      },
+      "lib/arm64-v8a/libreactnative.so": {
+        "bytes": 5878432,
+        "packed_bytes": 5878432,
+        "method": 0,
+        "sha256": "8fd69e877877a85f768190343e587a5a0238246c2903c4063be9fc05b7c705b7"
+      },
+      "lib/arm64-v8a/librnscreens.so": {
+        "bytes": 92072,
+        "packed_bytes": 92072,
+        "method": 0,
+        "sha256": "301f9a67c9bfd985423122a6e84e91e2649a06b2e8e70d526d3cbd713869919a"
+      },
+      "lib/arm64-v8a/librocksdb-native.3.19.1.so": {
+        "bytes": 6443976,
+        "packed_bytes": 6443976,
+        "method": 0,
+        "sha256": "a6a4d642adec5fc857b3f9efb96f3682298850715fbc98c1bb3e958dfed62770"
+      },
+      "lib/arm64-v8a/libsimdle-native.1.3.10.so": {
+        "bytes": 93768,
+        "packed_bytes": 93768,
+        "method": 0,
+        "sha256": "9087235e0f577edd70682e1abf88bd79454d38d3c1866c812abedce2b86b0480"
+      },
+      "lib/arm64-v8a/libsodium-native.5.2.0.so": {
+        "bytes": 515784,
+        "packed_bytes": 515784,
+        "method": 0,
+        "sha256": "b707a5e82d1bdc40a8f5b7d8f83f8bc3ad8ce0763f4207a4e7a83257c5be049e"
+      },
+      "lib/arm64-v8a/libstatic-webp.so": {
+        "bytes": 501856,
+        "packed_bytes": 501856,
+        "method": 0,
+        "sha256": "f3e5f9ab4f93f2a0a057285a2de9c93ba0ab59c76c22874d0356493ce283c4c7"
+      },
+      "lib/arm64-v8a/libudx-native.1.22.0.so": {
+        "bytes": 154864,
+        "packed_bytes": 154864,
+        "method": 0,
+        "sha256": "06e2124f3e8f126cb50eb7f61d6ba529fa0696f666fa55eb3f92a7bacba06b90"
+      }
+    }
+  },
+  "compressed": {
+    "name": "niragni-android.apk",
+    "bytes": 86371446,
+    "sha256": "36308987CB85E3DA38BB2D91E52E41C44B8072C4A10F0633C30048D4D8720C64",
+    "native_count": 60,
+    "native_packed_bytes": 67132504,
+    "native_raw_bytes": 206190520,
+    "bundle": {
+      "bytes": 21836528,
+      "packed_bytes": 4302583,
+      "method": 8
+    },
+    "native": {
+      "lib/arm64-v8a/libappmodules.so": {
+        "bytes": 621984,
+        "packed_bytes": 125326,
+        "method": 8,
+        "sha256": "f4e2d9a7789aa8c7550b48fc6b695005935ce4fe565d96e9c7e254cc5b6efb0f"
+      },
+      "lib/arm64-v8a/libbare-abort.2.0.14.so": {
+        "bytes": 10616,
+        "packed_bytes": 1779,
+        "method": 8,
+        "sha256": "a2cec0ac70a3d8c0931454f690f8431c44c7bbc8a8914348cf610c807a83c397"
+      },
+      "lib/arm64-v8a/libbare-buffer.3.7.1.so": {
+        "bytes": 48040,
+        "packed_bytes": 14690,
+        "method": 8,
+        "sha256": "4e712a8f4b7fe5415147021ba6ad8e3b814f7d3153ce20a18b908f93cbc2a1d9"
+      },
+      "lib/arm64-v8a/libbare-cpu-info.0.1.1.so": {
+        "bytes": 27344,
+        "packed_bytes": 9350,
+        "method": 8,
+        "sha256": "f7d7dff83c8fee9de38f8da8f72ae37ff1963d3e414e8db4d394d40c2697c78e"
+      },
+      "lib/arm64-v8a/libbare-crypto.1.15.4.so": {
+        "bytes": 834712,
+        "packed_bytes": 457691,
+        "method": 8,
+        "sha256": "091689b50aff066dcefc3712c952ff1d61cd3d43c08c83bb5a7e203c88f2c1ac"
+      },
+      "lib/arm64-v8a/libbare-dns.2.3.1.so": {
+        "bytes": 163296,
+        "packed_bytes": 74179,
+        "method": 8,
+        "sha256": "65f8513c6953ace1fe56be6e39d9750bd4781aaf72fbb10ab0dbe591bc395a22"
+      },
+      "lib/arm64-v8a/libbare-fs.4.8.4.so": {
+        "bytes": 60984,
+        "packed_bytes": 16093,
+        "method": 8,
+        "sha256": "98948a61b33a1bed6c3a0cd85a4ddf93802c3b2fd1d83d14dc95314c9efa9459"
+      },
+      "lib/arm64-v8a/libbare-gpu-info.0.1.1.so": {
+        "bytes": 27376,
+        "packed_bytes": 9229,
+        "method": 8,
+        "sha256": "125c1d3a624c41309e11d83c9b0c18f21cff51eafa89964dd341dff7478160c3"
+      },
+      "lib/arm64-v8a/libbare-hrtime.2.1.2.so": {
+        "bytes": 10496,
+        "packed_bytes": 2022,
+        "method": 8,
+        "sha256": "446bbb007e070280f60e191c8e63836450c10153e852519998ac48c1aa48c738"
+      },
+      "lib/arm64-v8a/libbare-inspect.3.1.10.so": {
+        "bytes": 14704,
+        "packed_bytes": 2467,
+        "method": 8,
+        "sha256": "e55db27c12d19e3a637f44642a25817f611da64dfcbae40406be1becef2df461"
+      },
+      "lib/arm64-v8a/libbare-kit.so": {
+        "bytes": 65541304,
+        "packed_bytes": 18304214,
+        "method": 8,
+        "sha256": "39509a4aa0c3e8a3867480726aa38b88c5d770bdff18cb1c1cc3d02ea65d5ac5"
+      },
+      "lib/arm64-v8a/libbare-os.3.9.3.so": {
+        "bytes": 40424,
+        "packed_bytes": 11497,
+        "method": 8,
+        "sha256": "7b9932c98afaca95239cd3fab3b55275f6137194787b19d494a0a2a4c40be400"
+      },
+      "lib/arm64-v8a/libbare-path.3.1.2.so": {
+        "bytes": 10608,
+        "packed_bytes": 2432,
+        "method": 8,
+        "sha256": "c75471b324515fc6858c5d139ff11bbecf2cd209e7d0b53ff19ee4288bdb2c79"
+      },
+      "lib/arm64-v8a/libbare-performance.2.1.1.so": {
+        "bytes": 36800,
+        "packed_bytes": 13796,
+        "method": 8,
+        "sha256": "ffff3bf1a845ecdc27bb9322f6fd64b3b43c265a943173de0c2da12c71cf4144"
+      },
+      "lib/arm64-v8a/libbare-pipe.4.4.0.so": {
+        "bytes": 28056,
+        "packed_bytes": 7228,
+        "method": 8,
+        "sha256": "91733b2e47c31cf61f0e0a7f51588e92a80d31cbf4ef93404aa2b73e7ad9e2a2"
+      },
+      "lib/arm64-v8a/libbare-signals.5.0.0.so": {
+        "bytes": 19088,
+        "packed_bytes": 3885,
+        "method": 8,
+        "sha256": "2dd615d0bddd4c0cf64105968f0f7244f3a6c70cf5a8d7bbc530c8a929f3f580"
+      },
+      "lib/arm64-v8a/libbare-stdio.1.0.3.so": {
+        "bytes": 10528,
+        "packed_bytes": 2345,
+        "method": 8,
+        "sha256": "576611212975c67f32e14cb5b579dce2345fc536c77b5131153f84bc77d2da05"
+      },
+      "lib/arm64-v8a/libbare-structured-clone.2.0.1.so": {
+        "bytes": 19288,
+        "packed_bytes": 4877,
+        "method": 8,
+        "sha256": "417c837cd367e24c6665f7c8c6704d95badc241b538795b24d1e3663015bd2c9"
+      },
+      "lib/arm64-v8a/libbare-subprocess.6.2.2.so": {
+        "bytes": 19480,
+        "packed_bytes": 5393,
+        "method": 8,
+        "sha256": "caf6851fff9302528155d593dfaff60e8043d6db27c954abde6fcbcd25577e4b"
+      },
+      "lib/arm64-v8a/libbare-tcp.2.6.1.so": {
+        "bytes": 19240,
+        "packed_bytes": 6567,
+        "method": 8,
+        "sha256": "4ad1f519427e4340bc56eeaa3b0877f6dc16b53e89aaf6f89cd461f3d2c82b61"
+      },
+      "lib/arm64-v8a/libbare-tls.3.2.0.so": {
+        "bytes": 1838808,
+        "packed_bytes": 948842,
+        "method": 8,
+        "sha256": "455dfc38b09c82c3c98774eaba0626e81f478f96dfc5319942842a2a9124f04c"
+      },
+      "lib/arm64-v8a/libbare-tty.5.2.1.so": {
+        "bytes": 19360,
+        "packed_bytes": 4715,
+        "method": 8,
+        "sha256": "cca05e9f93bea3e6db1ff1bf97c89903c87f84114abed7fdb22987e1aae25e2e"
+      },
+      "lib/arm64-v8a/libbare-type.1.4.0.so": {
+        "bytes": 14752,
+        "packed_bytes": 3473,
+        "method": 8,
+        "sha256": "28b2a0f3468ef65f4edefdc75f16fbbb1779b54dc5d02edbb697144a4ca8b283"
+      },
+      "lib/arm64-v8a/libbare-url.2.5.5.so": {
+        "bytes": 232256,
+        "packed_bytes": 92596,
+        "method": 8,
+        "sha256": "1fed27fd7a486612232ced4c173cbd74cb37b99a3c65400d5be86290c0d6e9a2"
+      },
+      "lib/arm64-v8a/libbare-zlib.1.4.1.so": {
+        "bytes": 89528,
+        "packed_bytes": 46528,
+        "method": 8,
+        "sha256": "0bf288b6f4422e124d34b2144ca27aff7507088bb6e01860bb23e7075739a4a2"
+      },
+      "lib/arm64-v8a/libc++_shared.so": {
+        "bytes": 1374336,
+        "packed_bytes": 454850,
+        "method": 8,
+        "sha256": "c4c2fe5cbcb1fba0003a31fc7ab29a9bb12df6cc187ec45a806462540e83d93b"
+      },
+      "lib/arm64-v8a/libexpo-modules-core.so": {
+        "bytes": 1315840,
+        "packed_bytes": 319361,
+        "method": 8,
+        "sha256": "03f2a34d52b45962f858dc854307a9f4657f1d86c5588a69f49cc2de5c97c456"
+      },
+      "lib/arm64-v8a/libexpo-sqlite.so": {
+        "bytes": 1821624,
+        "packed_bytes": 882245,
+        "method": 8,
+        "sha256": "917c1616e96d8fb18aa0903d7e80f51e1cb80e7ee17f453c6ba5db7b0af7cb1c"
+      },
+      "lib/arm64-v8a/libfbjni.so": {
+        "bytes": 177000,
+        "packed_bytes": 62764,
+        "method": 8,
+        "sha256": "a9e35ba55d3f956920281f519385f8a72475ee24819799cb08375fdd4cce2b22"
+      },
+      "lib/arm64-v8a/libfs-native-extensions.1.5.2.so": {
+        "bytes": 35944,
+        "packed_bytes": 9504,
+        "method": 8,
+        "sha256": "eec3b90e9b1812f68d74d3969c1d64a114a2cdc230c5855741c21a97ab17c2cb"
+      },
+      "lib/arm64-v8a/libgifimage.so": {
+        "bytes": 318992,
+        "packed_bytes": 106613,
+        "method": 8,
+        "sha256": "9f605249728da7091569772a38a4dde298ed48e1e73fed3da0e4b662ef38715c"
+      },
+      "lib/arm64-v8a/libhermes.so": {
+        "bytes": 2136264,
+        "packed_bytes": 893518,
+        "method": 8,
+        "sha256": "5705c7e2cf51fcd3befa825ae2a6717524037b368cdac005a7a63c4a92ef4467"
+      },
+      "lib/arm64-v8a/libhermestooling.so": {
+        "bytes": 137456,
+        "packed_bytes": 46009,
+        "method": 8,
+        "sha256": "142247a46e46a9c2b07397b2b69fff61ffe9f635da3c42308d214b134ad73e31"
+      },
+      "lib/arm64-v8a/libimagepipeline.so": {
+        "bytes": 8760,
+        "packed_bytes": 3175,
+        "method": 8,
+        "sha256": "1b377992e4256fa9398ec057722f84a359c7d588e570c8a41f51d930c19ece7d"
+      },
+      "lib/arm64-v8a/libjsi.so": {
+        "bytes": 390736,
+        "packed_bytes": 171351,
+        "method": 8,
+        "sha256": "4473c47c5bd25e2856b6b13f756e39abb299b1c19954830f6efbf13b6b6cf0b4"
+      },
+      "lib/arm64-v8a/libnative-filters.so": {
+        "bytes": 23712,
+        "packed_bytes": 12767,
+        "method": 8,
+        "sha256": "4294b57460e70a6351ce7ae2733a79c088c907dfa54673a657227ec5bb669594"
+      },
+      "lib/arm64-v8a/libnative-imagetranscoder.so": {
+        "bytes": 585376,
+        "packed_bytes": 224841,
+        "method": 8,
+        "sha256": "2aed28298a25afd52ac670cf9682398c6c7ba42a57195c01efd565e7ddfe17ca"
+      },
+      "lib/arm64-v8a/libquickbit-native.2.4.9.so": {
+        "bytes": 60816,
+        "packed_bytes": 23370,
+        "method": 8,
+        "sha256": "4e213fd8f6108ce390eb1d1c281685b9c3e56a72f038eefc0c72f1c08c34f4b7"
+      },
+      "lib/arm64-v8a/libqvac-ggml-cpu-android_armv8.0_1.so": {
+        "bytes": 1629248,
+        "packed_bytes": 707422,
+        "method": 8,
+        "sha256": "f4eaae02bc5cf7bca3a18acf5bc777f35763be2b2a408ca8707604188146a236"
+      },
+      "lib/arm64-v8a/libqvac-ggml-cpu-android_armv8.2_1.so": {
+        "bytes": 1647672,
+        "packed_bytes": 720029,
+        "method": 8,
+        "sha256": "b6a878f9830aaca7e4801f8dc4cefe217858f77900db68afdc8697c9e7227e2d"
+      },
+      "lib/arm64-v8a/libqvac-ggml-cpu-android_armv8.2_2.so": {
+        "bytes": 1647800,
+        "packed_bytes": 720374,
+        "method": 8,
+        "sha256": "23ca2fe13363da8b381672e426fbae8d5a3fb118283d2aaa61c2a60d4f6a03d7"
+      },
+      "lib/arm64-v8a/libqvac-ggml-cpu-android_armv8.6_1.so": {
+        "bytes": 1659648,
+        "packed_bytes": 728483,
+        "method": 8,
+        "sha256": "69a113858c2112c9e7f58fd50da43c3da09261acdcab476b3cf2340bc6bca15e"
+      },
+      "lib/arm64-v8a/libqvac-ggml-cpu-android_armv9.0_1.so": {
+        "bytes": 1645272,
+        "packed_bytes": 728180,
+        "method": 8,
+        "sha256": "8c97e2e6a386fc5ebbe5cc64c66f70b046194020e91c18e8f9371da3852b752a"
+      },
+      "lib/arm64-v8a/libqvac-ggml-cpu-android_armv9.2_1.so": {
+        "bytes": 1645272,
+        "packed_bytes": 728181,
+        "method": 8,
+        "sha256": "182cef006637a4534bb1629b1ff766483457b8a78acf8e469bd35f37156dc01f"
+      },
+      "lib/arm64-v8a/libqvac-ggml-cpu-android_armv9.2_2.so": {
+        "bytes": 1645272,
+        "packed_bytes": 728211,
+        "method": 8,
+        "sha256": "401e1c761e5f673dac0297e815caf19632a917295c190c64aecd5288789d785b"
+      },
+      "lib/arm64-v8a/libqvac-ggml-opencl.so": {
+        "bytes": 3657904,
+        "packed_bytes": 1028446,
+        "method": 8,
+        "sha256": "a9bedcb52eead802d4ac024cf42e2cd99655bca0c3de959ad02c4c9e13410e0b"
+      },
+      "lib/arm64-v8a/libqvac-ggml-rpc.so": {
+        "bytes": 893088,
+        "packed_bytes": 406190,
+        "method": 8,
+        "sha256": "f321724dc793d536c6c5cd584a5bdb34468f98376e1c6206781e82cb1216a396"
+      },
+      "lib/arm64-v8a/libqvac-ggml-vulkan.so": {
+        "bytes": 87238088,
+        "packed_bytes": 27666866,
+        "method": 8,
+        "sha256": "ef0063143cfcf96b56b8412ad9766a978c2cc2c7e1b5a6ec903caf128e02b2af"
+      },
+      "lib/arm64-v8a/libqvac__fabric-android-arm64.0.22.0.so": {
+        "bytes": 8731376,
+        "packed_bytes": 3637502,
+        "method": 8,
+        "sha256": "c25d2f2f9f87598fd3a8ed5615c2de10684e15b87f2cec53fe6e52986afa24d7"
+      },
+      "lib/arm64-v8a/libqvac__llm-llamacpp.0.61.2.so": {
+        "bytes": 1428896,
+        "packed_bytes": 595646,
+        "method": 8,
+        "sha256": "a38b0d581c70c1a4c6bc03d9b311e3622408cf056918413518f72d866faed130"
+      },
+      "lib/arm64-v8a/librabin-native.2.0.1.so": {
+        "bytes": 14856,
+        "packed_bytes": 3265,
+        "method": 8,
+        "sha256": "c0f3d729f3bc11f550dccb6211199ed149536c9fd3bda53f4a9c898aa68f2c80"
+      },
+      "lib/arm64-v8a/libreact_codegen_rnscreens.so": {
+        "bytes": 718272,
+        "packed_bytes": 174227,
+        "method": 8,
+        "sha256": "83b66e6864c16da596a770db48746f93bb55f949d54068de9fbbef86783502b5"
+      },
+      "lib/arm64-v8a/libreact_codegen_safeareacontext.so": {
+        "bytes": 161176,
+        "packed_bytes": 55733,
+        "method": 8,
+        "sha256": "8ef0b20aa33c007397da2fadb8989a36519597dac46049eaeb045f4da49af6c6"
+      },
+      "lib/arm64-v8a/libreactnative.so": {
+        "bytes": 5878432,
+        "packed_bytes": 1937011,
+        "method": 8,
+        "sha256": "8fd69e877877a85f768190343e587a5a0238246c2903c4063be9fc05b7c705b7"
+      },
+      "lib/arm64-v8a/librnscreens.so": {
+        "bytes": 92072,
+        "packed_bytes": 32595,
+        "method": 8,
+        "sha256": "301f9a67c9bfd985423122a6e84e91e2649a06b2e8e70d526d3cbd713869919a"
+      },
+      "lib/arm64-v8a/librocksdb-native.3.19.1.so": {
+        "bytes": 6443976,
+        "packed_bytes": 2639859,
+        "method": 8,
+        "sha256": "a6a4d642adec5fc857b3f9efb96f3682298850715fbc98c1bb3e958dfed62770"
+      },
+      "lib/arm64-v8a/libsimdle-native.1.3.10.so": {
+        "bytes": 93768,
+        "packed_bytes": 26389,
+        "method": 8,
+        "sha256": "9087235e0f577edd70682e1abf88bd79454d38d3c1866c812abedce2b86b0480"
+      },
+      "lib/arm64-v8a/libsodium-native.5.2.0.so": {
+        "bytes": 515784,
+        "packed_bytes": 215087,
+        "method": 8,
+        "sha256": "b707a5e82d1bdc40a8f5b7d8f83f8bc3ad8ce0763f4207a4e7a83257c5be049e"
+      },
+      "lib/arm64-v8a/libstatic-webp.so": {
+        "bytes": 501856,
+        "packed_bytes": 206899,
+        "method": 8,
+        "sha256": "f3e5f9ab4f93f2a0a057285a2de9c93ba0ab59c76c22874d0356493ce283c4c7"
+      },
+      "lib/arm64-v8a/libudx-native.1.22.0.so": {
+        "bytes": 154864,
+        "packed_bytes": 64327,
+        "method": 8,
+        "sha256": "06e2124f3e8f126cb50eb7f61d6ba529fa0696f666fa55eb3f92a7bacba06b90"
+      }
+    }
+  },
+  "saved_bytes": 157026664,
+  "saved_percent": 64.51,
+  "native_removed": [],
+  "native_added": [],
+  "native_content_changed": [],
+  "limitations": "Baseline is 29 October source; new APK also includes four 30 October bug fixes. Installed size, startup, RAM, inference and real SAF behavior are not measured."
+}

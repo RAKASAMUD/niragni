@@ -1,19 +1,25 @@
 /**
  * Emergency contact channels and directory for forest/land fire (karhutla).
- * The directory data is the reviewed 25-entry Indonesia set in
- * ./channel-directory (public = officially listed, never proven operational;
- * 112 is regional-unconfirmed). Never contacts agencies automatically.
+ *
+ * revision-2026-10-29: active channels are curated Damkar local only.
+ * Kemenhut/posko-umum/BPBD/112 removed from the active dispatch set per
+ * user decision. Raw directory data retained for reference; listChannels()
+ * now returns only verified Damkar channels. Coverage gaps are honest.
  */
 
 import * as Linking from 'expo-linking';
 import { Channel } from '../product-contract';
 import { CHANNEL_DIRECTORY } from './channel-directory';
+import { VERIFIED_INCIDENT_CHANNEL_IDS } from './channel-selector';
 
 export const CHANNELS: readonly Channel[] = CHANNEL_DIRECTORY;
 
+/** Returns only the currently active (verified Damkar incident) channels. */
 export function listChannels(): Channel[] {
-  return [...CHANNELS];
+  return CHANNELS.filter((c) => VERIFIED_INCIDENT_CHANNEL_IDS.has(c.id));
 }
+
+export * from './channel-selector';
 
 /**
  * Opens external OS dialer or handler for the given channel.

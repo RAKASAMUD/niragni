@@ -7,11 +7,13 @@ import {
   ProductServices,
   Report,
   Attachment,
+  SenderSelfie,
   Position,
   ModelState,
   Channel,
   AiResult,
-  ExportPreview
+  ExportPreview,
+  ShareStage
 } from '../product-contract';
 
 import { QvacNativeWorker } from '../worker';
@@ -108,6 +110,18 @@ class BaraProductServices implements ProductServices {
     return this.repository.removePhoto(reportId, attachmentId);
   }
 
+  // --- Sender Selfie (Front Camera) ---
+
+  public async captureSenderSelfie(reportId: string): Promise<SenderSelfie | null> {
+    await this.init();
+    return this.repository.captureSenderSelfie(reportId);
+  }
+
+  public async removeSenderSelfie(reportId: string): Promise<Report> {
+    await this.init();
+    return this.repository.removeSenderSelfie(reportId);
+  }
+
   // --- Geolocation ---
 
   public async getObserverLocation(): Promise<Position> {
@@ -172,14 +186,11 @@ class BaraProductServices implements ProductServices {
     return this.exportService.previewExport(report);
   }
 
-  public async shareReport(report: Report, channelId?: string): Promise<void> {
+  public async shareReport(report: Report, channelId?: string, onProgress?: (stage: ShareStage) => void): Promise<void> {
     await this.init();
-    return this.exportService.shareReport(report, channelId);
+    return this.exportService.shareReport(report, channelId, onProgress);
   }
 
-  public async copyReport(report: Report): Promise<void> {
-    return this.exportService.copyReport(report);
-  }
 
   public async openDialer(channelId: string): Promise<void> {
     return openDialer(channelId);

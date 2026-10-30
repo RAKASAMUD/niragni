@@ -1,0 +1,17 @@
+Verifies
+Verified using v1 scheme (JAR signing): false
+Verified using v2 scheme (APK Signature Scheme v2): true
+Verified using v3 scheme (APK Signature Scheme v3): false
+Verified using v3.1 scheme (APK Signature Scheme v3.1): false
+Verified using v4 scheme (APK Signature Scheme v4): false
+Verified for SourceStamp: false
+Number of signers: 1
+Signer #1 certificate DN: CN=Niragni
+Signer #1 certificate SHA-256 digest: 6cb72d16e72b2fe4937e17e6ce46b8b191a8f230df26d7454c7bd5e4adf64324
+Signer #1 certificate SHA-1 digest: fd5ea6e4de56012e025750bb1689f6fa6cccac54
+Signer #1 certificate MD5 digest: 56cfd446ddff749f50fc3057a3dec0e6
+Signer #1 key algorithm: RSA
+Signer #1 key size (bits): 4096
+Signer #1 public key SHA-256 digest: f02f52a7ffa260dc19bbd3fbd9594d600d3a8a9e653e4cc8cadc87edb5898fb6
+Signer #1 public key SHA-1 digest: 04e0d4c6b587e8458e28d91d8347cfab48d40c1d
+Signer #1 public key MD5 digest: 862c0667cb1436f5fca8fbc924a460a4

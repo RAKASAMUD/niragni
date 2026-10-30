@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Durable Report Repository managing SQLite persistence, monotonic revision increments,
  * stale write protection (CAS changes check), attachment atomicity, and media lifecycle.
  */
@@ -9,15 +9,20 @@ import {
   Attachment,
   ShareAttempt,
   Position,
-  Suggestion
+  Suggestion,
+  SenderSelfie
 } from '../product-contract';
 import {
   sanitizeId,
   captureAndProcessPhoto,
   deleteReportMedia,
   deleteAttachmentFiles,
-  recoverAndCleanOrphans
+  recoverAndCleanOrphans,
+  getReportMediaDir
 } from './media';
+import { File } from 'expo-file-system';
+import { validateObservationFields } from './timeValidation';
+import * as ImagePicker from 'expo-image-picker';
 
 interface ReportRow {
   id: string;
@@ -58,9 +63,22 @@ interface ShareAttemptRow {
   channelId: string | null;
 }
 
+interface SenderSelfieRow {
+  id: string;
+  reportId: string;
+  uri: string;
+  mime: string;
+  width: number;
+  height: number;
+  bytes: number;
+  capturedAt: string;
+  source: 'camera';
+}
+
 export class ReportRepository {
   /**
    * Initializes repository and performs startup orphan media cleanup.
+   * Includes sender selfie URIs so orphan cleanup does not delete valid selfie files.
    */
   public async init(): Promise<void> {
     const db = await getDatabase();
@@ -71,6 +89,13 @@ export class ReportRepository {
     for (const r of rows) {
       if (r.uri) activeUris.add(r.uri);
       if (r.analysisUri) activeUris.add(r.analysisUri);
+    }
+    // Include selfie URIs so they are not mistakenly cleaned up.
+    const selfieRows = await db.getAllAsync<{ uri: string }>(
+      'SELECT uri FROM sender_selfies'
+    );
+    for (const s of selfieRows) {
+      if (s.uri) activeUris.add(s.uri);
     }
     await recoverAndCleanOrphans(activeUris);
   }
@@ -169,6 +194,15 @@ export class ReportRepository {
    */
   public async saveReport(report: Report): Promise<Report> {
     const safeId = sanitizeId(report.id);
+
+    // Bug 3 fix: Validate observationTime and timezone BEFORE writing to DB.
+    // Invalid values are rejected here so they can never overwrite a valid draft.
+    // Old legacy reports with malformed values remain readable/editable; the
+    // validation only fires when the user actively saves a report, not on read.
+    const timeError = validateObservationFields(report.observationTime, report.timezone);
+    if (timeError) {
+      throw new Error(timeError);
+    }
 
     return withWriteLock(async (db) => {
       const existing = await db.getFirstAsync<ReportRow>(
@@ -279,6 +313,7 @@ export class ReportRepository {
 
     await withWriteLock(async (db) => {
       await db.withExclusiveTransactionAsync(async (txn) => {
+        await txn.runAsync('DELETE FROM sender_selfies WHERE reportId = ?', [safeId]);
         await txn.runAsync('DELETE FROM share_attempts WHERE reportId = ?', [safeId]);
         await txn.runAsync('DELETE FROM attachments WHERE reportId = ?', [safeId]);
         await txn.runAsync('DELETE FROM reports WHERE id = ?', [safeId]);
@@ -486,6 +521,8 @@ export class ReportRepository {
       } catch {}
     }
 
+    const selfie = await this.getSelfieForReport(row.id);
+
     return {
       id: row.id,
       revision: row.revision,
@@ -501,7 +538,166 @@ export class ReportRepository {
       attachments,
       suggestion,
       suggestionRevision: row.suggestionRevision,
-      shareAttempts
+      shareAttempts,
+      senderSelfie: selfie
     };
   }
+
+  /** Fetch the sender selfie for a report (null if none). */
+  private async getSelfieForReport(reportId: string): Promise<SenderSelfie | null> {
+    const db = await getDatabase();
+    const row = await db.getFirstAsync<SenderSelfieRow>(
+      'SELECT * FROM sender_selfies WHERE reportId = ?',
+      [reportId]
+    );
+    if (!row) return null;
+    // Guard: file must still exist on disk; a missing file means the selfie is not valid.
+    try {
+      const f = new File(row.uri);
+      if (!f.exists) return null;
+    } catch {
+      return null;
+    }
+    return {
+      id: row.id,
+      reportId: row.reportId,
+      uri: row.uri,
+      mime: row.mime,
+      width: row.width,
+      height: row.height,
+      bytes: row.bytes,
+      capturedAt: row.capturedAt,
+      source: row.source
+    };
+  }
+
+  /**
+   * Capture (or replace) a sender selfie using the front camera.
+   * Atomicity: stage new file under unique name, commit DB, delete old file
+   * only after commit succeeds. Rolls back (deletes new file) if DB write fails.
+   * Never reads other reports' data.
+   * Returns null if user cancelled.
+   */
+  public async captureSenderSelfie(reportId: string): Promise<SenderSelfie | null> {
+    const safeId = sanitizeId(reportId);
+    const report = await this.getReport(safeId);
+    if (!report) throw new Error(`Laporan '${safeId}' tidak ditemukan.`);
+
+    // Request camera permission before launch (same pattern as captureAndProcessPhoto).
+    const { status } = await ImagePicker.requestCameraPermissionsAsync();
+    if (status !== 'granted') {
+      throw new Error('Izin kamera diperlukan untuk mengambil selfie pengirim.');
+    }
+
+    const result = await ImagePicker.launchCameraAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      cameraType: ImagePicker.CameraType.front,
+      quality: 0.85,
+      exif: false,
+      allowsEditing: false,
+    });
+
+    if (result.canceled || !result.assets || result.assets.length === 0) return null;
+
+    const asset = result.assets[0];
+    // Unique filename per capture: timestamp + random nonce so two captures in
+    // the same millisecond (e.g. in tests with a stubbed clock) never collide.
+    const captureTs = Date.now();
+    const nonce = Math.random().toString(36).substring(2, 8);
+    const selfieId = sanitizeId(`selfie_${safeId}_${captureTs}_${nonce}`);
+    const dir = getReportMediaDir(safeId);
+    if (!dir.exists) dir.create({ intermediates: true, idempotent: true });
+
+    const ext = (asset.uri.split('.').pop() ?? 'jpg').replace(/[^a-zA-Z0-9]/g, '') || 'jpg';
+    // Build the destination via the File(dir, name) constructor — like every other
+    // file-creation site in this codebase — instead of string-templating dir.uri.
+    // dir.uri already ends with '/' (Directory.asString() appends one), so the old
+    // `${dir.uri}/selfie_...` template produced a literal double slash. That broke
+    // isSafeDescendantPath's exact-prefix check in export.ts, making every share
+    // attempt fail with "Jalur berkas selfie tidak valid" even with a freshly taken
+    // selfie. The File(dir, name) form goes through Paths.join(), which normalizes
+    // the path correctly.
+    const src = new File(asset.uri);
+    const dest = new File(dir, `selfie_${captureTs}_${nonce}.${ext}`);
+    const newFilePath = dest.uri;
+    src.copy(dest);
+
+    const capturedAt = new Date(captureTs).toISOString();
+    const selfie: SenderSelfie = {
+      id: selfieId,
+      reportId: safeId,
+      uri: newFilePath,
+      mime: asset.mimeType ?? 'image/jpeg',
+      width: asset.width ?? 0,
+      height: asset.height ?? 0,
+      bytes: asset.fileSize ?? dest.size ?? 0,
+      capturedAt,
+      source: 'camera',
+    };
+
+    let oldUri: string | null = null;
+    try {
+      await withWriteLock(async (db) => {
+        await db.withExclusiveTransactionAsync(async (txn) => {
+          // Fetch old URI before deleting the row (for post-commit cleanup).
+          const old = await txn.getFirstAsync<Pick<SenderSelfieRow, 'uri'>>(
+            'SELECT uri FROM sender_selfies WHERE reportId = ?',
+            [safeId]
+          );
+          oldUri = old?.uri ?? null;
+
+          await txn.runAsync(
+            'DELETE FROM sender_selfies WHERE reportId = ?',
+            [safeId]
+          );
+          await txn.runAsync(
+            `INSERT INTO sender_selfies (id, reportId, uri, mime, width, height, bytes, capturedAt, source)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [selfie.id, selfie.reportId, selfie.uri, selfie.mime,
+             selfie.width, selfie.height, selfie.bytes, selfie.capturedAt, selfie.source]
+          );
+          // NOTE: old file is NOT deleted here — deletion happens after commit below.
+        });
+      });
+    } catch (err) {
+      // DB write failed: roll back by deleting the newly staged file.
+      try { dest.delete(); } catch {}
+      throw err;
+    }
+
+    // Post-commit: delete the old file (only if different from the new one).
+    if (oldUri && oldUri !== newFilePath) {
+      try { new File(oldUri).delete(); } catch {}
+    }
+
+    return selfie;
+  }
+
+  /**
+   * Remove the sender selfie for a report. Deletes the file from private
+   * storage and clears the DB row. Report data is not otherwise modified.
+   */
+  public async removeSenderSelfie(reportId: string): Promise<Report> {
+    const safeId = sanitizeId(reportId);
+    let uriToDelete: string | null = null;
+
+    await withWriteLock(async (db) => {
+      const row = await db.getFirstAsync<Pick<SenderSelfieRow, 'uri'>>(
+        'SELECT uri FROM sender_selfies WHERE reportId = ?',
+        [safeId]
+      );
+      uriToDelete = row?.uri ?? null;
+      await db.runAsync('DELETE FROM sender_selfies WHERE reportId = ?', [safeId]);
+    });
+
+    // Delete file after DB commit.
+    if (uriToDelete) {
+      try { new File(uriToDelete).delete(); } catch {}
+    }
+
+    const updated = await this.getReport(safeId);
+    if (!updated) throw new Error(`Laporan '${safeId}' tidak ditemukan.`);
+    return updated;
+  }
 }
+

@@ -11,6 +11,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { useColorScheme } from 'react-native';
 import { services } from '../src/ui/services';
+import { PreviewBanner } from '../src/ui/PreviewBanner';
 
 export default function RootLayout() {
   const scheme = useColorScheme();
@@ -23,6 +24,8 @@ export default function RootLayout() {
   return (
     <SafeAreaProvider>
       <StatusBar style={scheme === 'dark' ? 'light' : 'dark'} />
+      {/* Web-only DEMO banner; renders null on native (production UI). */}
+      <PreviewBanner />
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="report" />

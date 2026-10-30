@@ -80,10 +80,19 @@ export class LifecycleCoordinator {
    * preventing native LMK process kills or lingering CPU/GPU consumption.
    */
   private handleBackgroundTransition(): void {
+    // Only cancel in-memory AI inference on background — that frees GPU/CPU
+    // state that must not be held while suspended. A model DOWNLOAD must keep
+    // running: on Android, opening the camera, the photo gallery, or the OS
+    // share sheet from the report flow also sends this app to 'background' or
+    // 'inactive', so cancelling downloads here aborted (and discarded) any
+    // in-progress model download every time the user took a photo or shared a
+    // report while a model was downloading — model downloads can take minutes,
+    // so this made completing one while using the rest of the app effectively
+    // impossible. The network layer (expo-file-system's DownloadResumable)
+    // and the OS already keep transferring in the background independent of
+    // JS lifecycle, so there is no RAM/CPU reason to cancel it here.
     if (this.currentOp === 'inferring' && this.handlers) {
       void this.handlers.cancelInference().catch(() => {});
-    } else if (this.currentOp === 'downloading' && this.handlers) {
-      void this.handlers.cancelDownload().catch(() => {});
     }
   }
 

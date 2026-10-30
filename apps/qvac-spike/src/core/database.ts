@@ -144,4 +144,57 @@ async function runMigrations(db: SQLiteDatabase): Promise<void> {
       );
     });
   }
+
+  if (currentVersion < 2) {
+    await db.withExclusiveTransactionAsync(async (txn) => {
+      // v2: sender selfie — separate from max-3 incident photos.
+      // Old reports without a selfie have no row here (senderSelfie = null).
+      // Compatible add: existing data untouched.
+      await txn.execAsync(`
+        CREATE TABLE IF NOT EXISTS sender_selfies (
+          id TEXT PRIMARY KEY,
+          reportId TEXT NOT NULL,
+          uri TEXT NOT NULL,
+          mime TEXT NOT NULL DEFAULT 'image/jpeg',
+          width INTEGER NOT NULL DEFAULT 0,
+          height INTEGER NOT NULL DEFAULT 0,
+          bytes INTEGER NOT NULL DEFAULT 0,
+          capturedAt TEXT NOT NULL,
+          source TEXT NOT NULL DEFAULT 'camera',
+          FOREIGN KEY (reportId) REFERENCES reports(id) ON DELETE CASCADE
+        );
+        CREATE UNIQUE INDEX IF NOT EXISTS idx_selfie_report ON sender_selfies(reportId);
+      `);
+
+      await txn.runAsync(
+        'INSERT INTO schema_version (version, applied_at) VALUES (?, ?)',
+        2,
+        new Date().toISOString()
+      );
+    });
+  }
+
+  if (currentVersion < 3) {
+    await db.withExclusiveTransactionAsync(async (txn) => {
+      // v3: persist the SHA-256-verified pair fingerprint (size + modificationTime)
+      // alongside the model state, not just in ModelManager's in-memory Map. The
+      // in-memory map resets on every app relaunch, forcing the first AI draft of
+      // every session to re-hash the ~545MB model+projector pair from scratch even
+      // when the files on disk are byte-identical to the last verified run.
+      // Columns are nullable: a row with no verified fingerprint yet (or one whose
+      // hash check failed/became stale) simply re-hashes, same as before this fix.
+      await txn.execAsync(`
+        ALTER TABLE model_states ADD COLUMN verifiedModelSize INTEGER;
+        ALTER TABLE model_states ADD COLUMN verifiedModelModTime INTEGER;
+        ALTER TABLE model_states ADD COLUMN verifiedProjectorSize INTEGER;
+        ALTER TABLE model_states ADD COLUMN verifiedProjectorModTime INTEGER;
+      `);
+
+      await txn.runAsync(
+        'INSERT INTO schema_version (version, applied_at) VALUES (?, ?)',
+        3,
+        new Date().toISOString()
+      );
+    });
+  }
 }

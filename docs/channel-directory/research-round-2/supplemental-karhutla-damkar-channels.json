@@ -1,0 +1,142 @@
+[
+  {
+    "id": "kemenhut-posko-tel",
+    "label": "Posko Karhutla Kementerian Kehutanan (Telepon)",
+    "destination": "021-5704618",
+    "kind": "phone",
+    "scope": "Nasional",
+    "sourceUrl": "https://www.kehutanan.go.id/pers/cek-informasi-terbaru-karhutla-kemenhut-di-sini",
+    "checkedAt": "2026-10-29",
+    "availability": "public"
+  },
+  {
+    "id": "kemenhut-posko-wa",
+    "label": "Posko Karhutla Kementerian Kehutanan (WhatsApp)",
+    "destination": "+62 8131-00-35000",
+    "kind": "whatsapp",
+    "scope": "Nasional",
+    "sourceUrl": "https://www.kehutanan.go.id/pers/cek-informasi-terbaru-karhutla-kemenhut-di-sini",
+    "checkedAt": "2026-10-29",
+    "availability": "public"
+  },
+  {
+    "id": "kemenhut-posko-email",
+    "label": "Posko Karhutla Kementerian Kehutanan (Email)",
+    "destination": "posko.karhutla@kehutanan.go.id",
+    "kind": "email",
+    "scope": "Nasional",
+    "sourceUrl": "https://www.kehutanan.go.id/pers/cek-informasi-terbaru-karhutla-kemenhut-di-sini",
+    "checkedAt": "2026-10-29",
+    "availability": "public"
+  },
+  {
+    "id": "damkar-dki-tel",
+    "label": "Dinas Penanggulangan Kebakaran dan Penyelamatan Provinsi DKI Jakarta (Telepon Kantor Dinas)",
+    "destination": "021-6344579",
+    "kind": "phone",
+    "scope": "Provinsi DKI Jakarta",
+    "sourceUrl": "https://pemadam.jakarta.go.id/id",
+    "checkedAt": "2026-10-29",
+    "availability": "public"
+  },
+  {
+    "id": "damkar-dki-email",
+    "label": "Dinas Penanggulangan Kebakaran dan Penyelamatan Provinsi DKI Jakarta (Email Dinas)",
+    "destination": "damkardki@jakarta.go.id",
+    "kind": "email",
+    "scope": "Provinsi DKI Jakarta",
+    "sourceUrl": "https://pemadam.jakarta.go.id/id",
+    "checkedAt": "2026-10-29",
+    "availability": "public"
+  },
+  {
+    "id": "damkar-pekanbaru-tel",
+    "label": "DPKP Kota Pekanbaru (Telepon Markas Damkar)",
+    "destination": "0761-22382",
+    "kind": "phone",
+    "scope": "Kota Pekanbaru, Riau",
+    "sourceUrl": "https://www.pekanbaru.go.id/p/news/respon-cepat-damkar-pekanbaru-kini-layanan-pengaduan-bisa-lewat-whatsapp-24-jam-nonstop",
+    "checkedAt": "2026-10-29",
+    "availability": "public"
+  },
+  {
+    "id": "damkar-pekanbaru-wa",
+    "label": "DPKP Kota Pekanbaru (WhatsApp Pengaduan Damkar 24 Jam Nonstop)",
+    "destination": "+62 851-8607-0113",
+    "kind": "whatsapp",
+    "scope": "Kota Pekanbaru, Riau",
+    "sourceUrl": "https://www.pekanbaru.go.id/p/news/respon-cepat-damkar-pekanbaru-kini-layanan-pengaduan-bisa-lewat-whatsapp-24-jam-nonstop",
+    "checkedAt": "2026-10-29",
+    "availability": "public"
+  },
+  {
+    "id": "damkar-palangkaraya-tel",
+    "label": "DPKP Kota Palangka Raya (Telepon Penanganan Kebakaran)",
+    "destination": "0536-3230113",
+    "kind": "phone",
+    "scope": "Kota Palangka Raya, Kalimantan Tengah",
+    "sourceUrl": "https://mediacenter.palangkaraya.go.id/warga-palangka-raya-diimbau-waspadai-potensi-kebakaran/",
+    "checkedAt": "2026-10-29",
+    "availability": "public"
+  },
+  {
+    "id": "damkar-pontianak-pancabakti-tel",
+    "label": "Pemadam Kebakaran Panca Bakti Kota Pontianak (Telepon)",
+    "destination": "0561-740916",
+    "kind": "phone",
+    "scope": "Kota Pontianak, Kalimantan Barat",
+    "sourceUrl": "https://www.pontianak.go.id/layanan-publik/daftar-telepon",
+    "checkedAt": "2026-10-29",
+    "availability": "public"
+  },
+  {
+    "id": "damkar-semarang-tel",
+    "label": "Dinas Pemadam Kebakaran Kota Semarang (Telepon Posko)",
+    "destination": "024-7605871",
+    "kind": "phone",
+    "scope": "Kota Semarang, Jawa Tengah",
+    "sourceUrl": "https://ppid.semarangkota.go.id/kb/pemadaman-kebakaran-kota-semarang-2/",
+    "checkedAt": "2026-10-29",
+    "availability": "public"
+  },
+  {
+    "id": "damkar-semarang-email",
+    "label": "Dinas Pemadam Kebakaran Kota Semarang (Email)",
+    "destination": "kebakaran.semarangkota@gmail.com",
+    "kind": "email",
+    "scope": "Kota Semarang, Jawa Tengah",
+    "sourceUrl": "https://ppid.semarangkota.go.id/kb/pemadaman-kebakaran-kota-semarang-2/",
+    "checkedAt": "2026-10-29",
+    "availability": "public"
+  },
+  {
+    "id": "damkarmat-jogjakota-wa",
+    "label": "Dinas Pemadam Kebakaran dan Penyelamatan Kota Yogyakarta (WhatsApp Call Center)",
+    "destination": "+62 811-2828-113",
+    "kind": "whatsapp",
+    "scope": "Kota Yogyakarta, D.I. Yogyakarta",
+    "sourceUrl": "https://jogjakota.go.id/page/helpdesk",
+    "checkedAt": "2026-10-29",
+    "availability": "public"
+  },
+  {
+    "id": "damkarmat-jogjakota-tel",
+    "label": "Dinas Pemadam Kebakaran dan Penyelamatan Kota Yogyakarta (Telepon)",
+    "destination": "0274-587101",
+    "kind": "phone",
+    "scope": "Kota Yogyakarta, D.I. Yogyakarta",
+    "sourceUrl": "https://jogjakota.go.id/page/helpdesk",
+    "checkedAt": "2026-10-29",
+    "availability": "public"
+  },
+  {
+    "id": "damkar-kotaserang-tel",
+    "label": "Pemadam Kebakaran Kota Serang (Telepon)",
+    "destination": "0254-283113",
+    "kind": "phone",
+    "scope": "Kota Serang, Banten",
+    "sourceUrl": "https://birokesra.bantenprov.go.id/berita/daftar-nomor-telepon-darurat-damkar-dan-bpbd-di-banten-siaga-24-jam-tangani-kondisi-kebencanaan",
+    "checkedAt": "2026-10-29",
+    "availability": "public"
+  }
+]

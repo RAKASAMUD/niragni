@@ -3,12 +3,7 @@
  *
  * AGY implements `export const services: ProductServices` at src/core/index.ts
  * (per product-contract.ts and the product plan). The UI imports it ONLY here so
- * there is one resolve point at integration time. No fake/mock service is
- * provided — if the module is missing the app fails to build, which is correct:
- * the UI must never present a stub service as if it worked.
- *
- * Imports are extensionless (Metro/Expo resolves TS; a ".js" specifier pointing
- * at a .ts source broke a prior spike bundle).
+ * there is one resolve point at integration time.
  */
 export { services } from '../core/index';
 export type {
@@ -17,7 +12,9 @@ export type {
   Suggestion,
   Position,
   Attachment,
+  SenderSelfie,
   ShareAttempt,
+  ShareStage,
   Report,
   ModelState,
   Channel,

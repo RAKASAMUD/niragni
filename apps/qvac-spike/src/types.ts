@@ -45,13 +45,6 @@ export interface PairReadinessResult {
   readonly details: string;
 }
 
-export interface FireObservationInput {
-  readonly userNotes: string;
-  readonly photoUri?: string;
-  readonly observationTimeText?: string;
-  readonly incidentLocationText?: string;
-}
-
 export interface InferenceTimingStats {
   readonly coldStart: boolean;
   readonly loadDurationMs?: number;
@@ -72,19 +65,3 @@ export interface InferenceResult {
   readonly error?: string;
 }
 
-export type WorkerPhase = 'idle' | 'checking_readiness' | 'loading_model' | 'ready' | 'inferring' | 'cancelling' | 'cancelled' | 'error';
-
-export interface AppState {
-  readonly selectedCandidateId: 'smolvlm2-500m' | 'visionpsy-nano-460m';
-  readonly modelPath: string;
-  readonly projectorPath: string;
-  readonly photoUri: string | null;
-  readonly userNotes: string;
-  readonly incidentLocationText: string;
-  readonly observationTimeText: string;
-  readonly phase: WorkerPhase;
-  readonly readiness: PairReadinessResult | null;
-  readonly outputText: string;
-  readonly errorMessage: string | null;
-  readonly lastStats: InferenceTimingStats | null;
-}

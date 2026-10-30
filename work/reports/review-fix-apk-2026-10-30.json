@@ -1,0 +1,18 @@
+{
+  "apk": "artifacts\\niragni-android.apk",
+  "bytes": 86374506,
+  "sha256": "EAC6123AFB28F7A6F4D09B6DFB26E2C216D452A5ECD852B4B69B1B343CDAA29C",
+  "abis": [
+    "arm64-v8a"
+  ],
+  "nativeLibraries": 60,
+  "allNativeLibrariesDeflated": true,
+  "jsBundleDeflated": true,
+  "bundledModels": [],
+  "signature": {
+    "verified": true,
+    "v2Scheme": true,
+    "signer": "CN=Niragni",
+    "certificateSha256": "6cb72d16e72b2fe4937e17e6ce46b8b191a8f230df26d7454c7bd5e4adf64324"
+  }
+}
